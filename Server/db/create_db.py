@@ -9,7 +9,7 @@ db_pw = os.environ.get('DB_PW')
 
 # Connect to postgres
 connection = psycopg2.connect(
-    dbname='postgres', user=db_user, password=db_pw,
+    dbname='postgres', user=db_user, password=db_pw, host='localhost',
 )
 
 # Create Cursor
