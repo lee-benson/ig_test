@@ -10,7 +10,7 @@ db_pw = os.environ.get('DB_PW')
 # Defining function for connection
 def connect_to_postgres():
     connection = psycopg2.connect(
-        dbname='postgres', user=db_user, password=db_pw, host='localhost',
+        dbname='postgres', user=db_user, password=db_pw, host='172.17.0.2',
     )
     try:
         yield connection
