@@ -8,23 +8,30 @@ db_user = os.environ.get('DB_USER')
 db_pw = os.environ.get('DB_PW')
 
 # Connect to postgres
-connection = psycopg2.connect(
-    dbname='postgres', user=db_user, password=db_pw, host='172.17.0.2',
-)
+# Defining function for connection
 
-# Create Cursor
 
-cursor = connection.cursor()
+def connect_to_postgres():
+    connection = psycopg2.connect(
+        dbname='postgres', user=db_user, password=db_pw, host='localhost', port='5432',
+    )
+    try:
+        yield connection
+    finally:
+        connection.close()
 
 # Create db
 
-cursor.execute(f"CREATE DATABASE {db_name}")
 
-# Commit the changes
+def create_db():
+    with connect_to_postgres() as connection:
+        # Set connection to autocommit mode
+        connection.autocommit = True
+        # Create Cursor
+        cursor = connection.cursor()
+        cursor.execute(f"CREATE DATABASE {db_name}")
+        # Close cursor and disconnect
+        cursor.close()
 
-connection.commit()
 
-# Close cursor and disconnect
-
-cursor.close()
-connection.close()
+create_db()
