@@ -1,6 +1,9 @@
 import psycopg2
 import os
+from python_dotenv import load_dotenv
 import hashlib
+
+load_dotenv()
 
 # Load environment variables
 db_user = os.environ.get('DB_USER')
