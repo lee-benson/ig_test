@@ -15,23 +15,23 @@ def connect_to_postgres():
     connection = psycopg2.connect(
         dbname='postgres', user=db_user, password=db_pw, host='localhost', port='5432',
     )
-    try:
-        yield connection
-    finally:
-        connection.close()
+    return connection
 
 # Create db
 
 
 def create_db():
-    with connect_to_postgres() as connection:
-        # Set connection to autocommit mode
-        connection.autocommit = True
+    connection = connect_to_postgres()
+    # Set connection to autocommit mode
+    connection.autocommit = True
+    try:
         # Create Cursor
         cursor = connection.cursor()
         cursor.execute(f"CREATE DATABASE {db_name}")
+    finally:
         # Close cursor and disconnect
         cursor.close()
+        connection.close()
 
 
 create_db()
