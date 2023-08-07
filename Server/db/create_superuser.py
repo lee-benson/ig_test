@@ -12,47 +12,46 @@ def connect_to_postgres():
     connection = psycopg2.connect(
         dbname='postgres', user=db_user, password=db_pw, host='localhost', port='5432',
     )
-    try:
-        yield connection
-    finally:
-        connection.close()
+    return connection
 
 
 def check_superuser_exists(username):
     # Establish connection to postgres db
-    with connect_to_postgres() as connection:
-        # Create cursor
-        cursor = connection.cursor()
+    connection = connect_to_postgres()
+    connection.autocommit = True
+    # Create cursor
+    cursor = connection.cursor()
 
-        # Execute sql query to check if superuser already exists
-        cursor.execute(
-            "SELECT rolname FROM pg_roles WHERE rolname = %s", (username,))
-        superuser_exists = cursor.fetchone() is not None
+    # Execute sql query to check if superuser already exists
+    cursor.execute(
+        "SELECT rolname FROM pg_roles WHERE rolname = %s", (username,))
+    superuser_exists = cursor.fetchone() is not None
 
-        cursor.close()
+    cursor.close()
+    connection.close()
     return superuser_exists
 
 
 def create_superuser(username, password):
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     # Establish connection to postgres db
-    with connect_to_postgres() as connection:
-        # Create cursor
-        cursor = connection.cursor()
+    connection = connect_to_postgres()
+    connection.autocommit = True
+    # Create cursor
+    cursor = connection.cursor()
 
-        try:
-            # Execute parameterized sql queries to create superuser
-            cursor.execute("CREATE USER %s WITH PASSWORD %s",
-                           (username, hashed_password,))
-            cursor.execute("ALTER USER %s WITH SUPERUSER", (username,))
+    try:
+        # Execute parameterized sql queries to create superuser
+        cursor.execute("CREATE USER %s WITH PASSWORD %s",
+                       (username, hashed_password,))
+        cursor.execute("ALTER USER %s WITH SUPERUSER", (username,))
 
-            # Commit the changes
-            connection.commit()
-            print(f"Superuser '{username}' created successfully.")
-        except Exception as e:
-            print(f"Error occurred: {e}")
-            connection.rollback()
-        cursor.close()
+        print(f"Superuser '{username}' created successfully.")
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        connection.rollback()
+    cursor.close()
+    connection.close()
 
 
 superuser_username = os.environ.get('SUP_USER')
