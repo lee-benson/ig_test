@@ -1,6 +1,7 @@
 import psycopg2
 import os
-from python_dotenv import load_dotenv
+from psycopg2.extensions import AsIs
+from dotenv import load_dotenv
 import hashlib
 
 load_dotenv()
@@ -46,8 +47,10 @@ def create_superuser(username, password):
     try:
         # Execute parameterized sql queries to create superuser
         cursor.execute("CREATE USER %s WITH PASSWORD %s",
-                       (username, hashed_password,))
-        cursor.execute("ALTER USER %s WITH SUPERUSER", (username,))
+                       (AsIs(username), hashed_password,))
+        cursor.execute("ALTER USER %s WITH SUPERUSER", (AsIs(username),))
+        # Use AsIs() because identifiers like a username must not be in single quotes
+        # psycopg2 automatically makes string literals, denoted with single quotes
 
         print(f"Superuser '{username}' created successfully.")
     except Exception as e:
