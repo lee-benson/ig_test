@@ -14,7 +14,7 @@ db_pw = os.environ.get('DB_PW')
 # Defining function for connection
 def connect_to_postgres():
     connection = psycopg2.connect(
-        dbname='postgres', user=db_user, password=db_pw, host='localhost', port='5432',
+        dbname='postgres', user=db_user, password=db_pw, host='localhost', port=5432,
     )
     return connection
 
