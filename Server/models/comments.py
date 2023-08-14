@@ -2,7 +2,7 @@ import os
 from peewee import *
 from dotenv import load_dotenv
 from users import User
-from chatrooms import Chatroom
+from posts import Post
 
 load_dotenv()
 
@@ -14,11 +14,13 @@ db = PostgresqlDatabase(
     port=5432,
 )
 
+# Remember foreignkeyfields make a many-to-one/ one-to-many relation.
+# E.g. there can be multiple comments on one post and multiple comments from one user. (Many to one)
 
-class Message(Model):
-    chatroom = ForeignKeyField(Chatroom)
-    sender = ForeignKeyField(User)
-    receiver = ForeignKeyField(User)
+
+class Comment(Model):
+    user = ForeignKeyField(User)
+    post = ForeignKeyField(Post)
     text = TextField()
     timestamp = DateTimeField()
 
