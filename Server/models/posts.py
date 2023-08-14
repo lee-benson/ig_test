@@ -1,6 +1,7 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
+from users import User
 
 load_dotenv()
 
@@ -11,3 +12,13 @@ db = PostgresqlDatabase(
     host='localhost',
     port=5432,
 )
+
+
+class Post(Model):
+    user = ForeignKeyField(User)
+    caption = TextField()
+    image_url = CharField()
+    timestamp = DateTimeField()
+
+    class Meta:
+        database = db

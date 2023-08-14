@@ -11,3 +11,12 @@ db = PostgresqlDatabase(
     host='localhost',
     port=5432,
 )
+
+
+class User(Model):
+    username = CharField()
+    password = CharField()
+    email = CharField()
+
+    class Meta:
+        database = db
