@@ -15,7 +15,7 @@ db = PostgresqlDatabase(
 
 
 class Post(Model):
-    user = ForeignKeyField(User)
+    user = ForeignKeyField(User, backref='posts')
     caption = TextField()
     image_url = CharField()
     timestamp = DateTimeField()

@@ -19,8 +19,8 @@ db = PostgresqlDatabase(
 
 
 class Comment(Model):
-    user = ForeignKeyField(User)
-    post = ForeignKeyField(Post)
+    user = ForeignKeyField(User, backref='comments')
+    post = ForeignKeyField(Post, backref='comments')
     text = TextField()
     timestamp = DateTimeField()
 
