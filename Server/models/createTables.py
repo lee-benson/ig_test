@@ -25,5 +25,4 @@ db.create_tables([User, Post, Comment, Chatroom, Message, UsersChatroom])
 
 # Next step would be to seed data/ create dummy data
 
-
 # Remember to save data and close connection: .save() & db.close()
