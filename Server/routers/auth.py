@@ -24,7 +24,7 @@ def generate_token(user):
     token = jwt.encode(payload, TOKEN_KEY, algorithm='HS256')
     return token
 
-# Define signup and signin functions
+# Define signup and login functions
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
@@ -43,6 +43,29 @@ def signup():
         return jsonify({'token' : token})
     except Exception as e:
         return jsonify({'error' : str(e)}), 500 
+
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.json
+        username = data['username']
+        password = data['password']
+
+        # Find user
+
+        user = User.select().where(User.username == username).get()
+
+        # Verify password
+
+        verify_status = bcrypt.checkpw(password.encode('utf-8'), user.password)
+        if user and verify_status:
+            token = generate_token(user.id)
+            return jsonify({'token' : token})
+        else:
+            return jsonify({'error' : 'Invalid credentials'}), 401
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+
 
 
 
