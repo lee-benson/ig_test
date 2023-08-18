@@ -16,7 +16,6 @@ db = PostgresqlDatabase(
 class User(Model):
     username = CharField()
     password = CharField()
-    email = CharField()
 
     class Meta:
         database = db
