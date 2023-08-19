@@ -3,7 +3,7 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
-from users import User
+from ..models.users import User
 import os
 import bcrypt
 import jwt
