@@ -50,7 +50,7 @@ def get_posts():
 @posts_bp.route('/<username>', methods=['GET'])
 def get_user_post():
     try:
-        username = request.args.get("username")
+        username = request.args.get('username')
 
         user = User.select().where(User.username == username).get()
 
@@ -62,24 +62,38 @@ def get_user_post():
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-# Create post
-@posts_bp.route('/', methods=['POST'])
-def create_post():
+# Update Post
+@posts_bp.route('/<int:id>', methods=['PUT'])
+def update_post(id):
     try:
-        
         # Verify first (Will have a separate middleware verification as well)
-
-        data = request.json
         auth_header = request.headers.get('Authorization')
-
         if not auth_header:
             return jsonify({'error' : 'Missing authorization header'}), 401
         
         token = auth_header.split()[1] 
-        decoded_token = jwt.verify(token, TOKEN_KEY)
-        user = User.get(User.username == decoded_token.username)
+        decoded_token = jwt.decode(token, TOKEN_KEY, algorithms=['HS256'])
+        user = User.get(User.id == decoded_token['user_id'])
 
-        return jsonify(), 200
+        # Find post by id and user
+
+        post = Post.select().where(Post.id == id, Post.user == user).get()
+        
+        if post.user != user:
+            return jsonify({'error' : 'You do not have perission to update this post'}), 403
+        # After retrieving post add the changes
+
+        data = request.json
+
+        if 'caption' in data: 
+            post.caption = data['caption']
+        if 'image_url' in data:
+            post.image_url = data['image_url']
+        post.timestamp = datetime.utcnow()
+        post.save()
+        return jsonify(post.serialize()), 200
+    except Post.DoesNotExist:
+        return jsonify({'error' : 'Post not found'}), 404
     except Exception as e: 
         return jsonify({'error' : str(e)}), 500
 
