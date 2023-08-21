@@ -16,7 +16,7 @@ db = PostgresqlDatabase(
 
 class Post(Model):
     user = ForeignKeyField(User, backref='posts')
-    caption = TextField()
+    caption = TextField(default='') # Empty string creates optional effect
     image_url = CharField()
     timestamp = DateTimeField()
 

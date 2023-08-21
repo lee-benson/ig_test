@@ -46,9 +46,9 @@ def get_posts():
         return jsonify({'error' : str(e)}), 500
     
 
-# Someone else' posts
+# Get someone else' posts
 @posts_bp.route('/<username>', methods=['GET'])
-def get_user_post():
+def get_user_posts():
     try:
         username = request.args.get('username')
 
@@ -62,18 +62,28 @@ def get_user_post():
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
+# Create Posts
+@posts_bp.route('/', methods=['POST'])
+def create_post():
+    try:
+        user = token_user()
+        data = request.json
+        post = Post.create(
+            user=user,
+            caption=data.get('caption', ''),
+            image_url=data['image_url'],
+            timestamp=datetime.utcnow()
+            )
+        return jsonify(post.serialize()), 200
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+
 # Update Post
 @posts_bp.route('/<int:id>', methods=['PUT'])
 def update_post(id):
     try:
         # Verify first (Will have a separate middleware verification as well)
-        auth_header = request.headers.get('Authorization')
-        if not auth_header:
-            return jsonify({'error' : 'Missing authorization header'}), 401
-        
-        token = auth_header.split()[1] 
-        decoded_token = jwt.decode(token, TOKEN_KEY, algorithms=['HS256'])
-        user = User.get(User.id == decoded_token['user_id'])
+        user = token_user()
 
         # Find post by id and user
 
@@ -96,5 +106,23 @@ def update_post(id):
         return jsonify({'error' : 'Post not found'}), 404
     except Exception as e: 
         return jsonify({'error' : str(e)}), 500
+
+   
+
+# Get user from header
+def token_user():
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return jsonify({'error' : 'Missing authorization header'}), 401
+        token = auth_header.split()[1]
+        decoded_token = jwt.decode(token, TOKEN_KEY, algorithms=['HS256'])
+        user = User.get(User.id == decoded_token['user_id'])
+        return user
+    except User.DoesNotExist:
+        return jsonify({'error' : 'User not found'}), 404
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+
 
 
