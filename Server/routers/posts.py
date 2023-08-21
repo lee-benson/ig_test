@@ -90,7 +90,7 @@ def update_post(id):
         post = Post.select().where(Post.id == id, Post.user == user).get()
         
         if post.user != user:
-            return jsonify({'error' : 'You do not have perission to update this post'}), 403
+            return jsonify({'error' : 'You do not have permission to update this post'}), 403
         # After retrieving post add the changes
 
         data = request.json
@@ -107,7 +107,21 @@ def update_post(id):
     except Exception as e: 
         return jsonify({'error' : str(e)}), 500
 
-   
+# Delete post
+@posts_bp.route('/<int:id>', methods=['DELETE'])
+def delete_post(id):
+    try:
+        user = token_user()
+        post = Post.select().where(Post.id == id, Post.user == user).get()
+
+        if post.user != user:
+            return jsonify({'error' : 'You do not have permission to delete this post'}), 403
+        post.delete()
+        return jsonify({'message' : 'Post deleted successfully'}), 200
+    except Post.DoesNotExist:
+        return jsonify({'error' : 'Post not found'}), 404
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
 
 # Get user from header
 def token_user():
