@@ -1,12 +1,14 @@
-# CRUD for users (Primarily the GET)
-
 from flask import Blueprint, request, jsonify
-from dotenv import load_dotenv
+from datetime import datetime
 from ..models.users import User
-import os
+from ..models.posts import Post
+from ..models.comments import Comment
 import jwt
+import os
+from dotenv import load_dotenv
 
 load_dotenv()
+
 TOKEN_KEY = os.environ.get('TOKEN_KEY')
 
 # Get user from header
@@ -24,16 +26,26 @@ def token_user():
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-users_bp = Blueprint('users', __name__ )
+comments_bp = Blueprint('comments', __name__)
 
-# Deletes User
-@users_bp.route('/<username>', methods=['DELETE'])
-def delete_user(username):
+@comments_bp.route('/<int:id>', methods=['POST'])
+def create_comment(id):
     try:
         user = token_user()
-        if user.username != username:
-            return jsonify({'error' : 'You do not have permission to delete this account'}), 403
-        user.delete()
-        return jsonify({'message' : 'Account deleted successfully'}), 200
+        post = Post.select().where(Post.id == id).get()
+
+        if not post:
+            return jsonify({'error' : 'Post not found'}), 404
+
+        data = request.json
+        text = data['text']
+
+        comment = Comment.create(
+            user=user,
+            post=post,
+            text=text,
+            timestamp=datetime.utcnow()
+        )
+        return jsonify(comment.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
