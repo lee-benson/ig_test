@@ -56,7 +56,7 @@ def get_comments(id):
         post = Post.select().where(Post.id == id).get()
         if not post:
             return jsonify({'error' : 'Post not found'}), 404
-        comment = post.comments
-        return jsonify(comment.serialize()), 200
+        comments = [comment.serialize() for comment in post.comments]
+        return jsonify(comments), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
