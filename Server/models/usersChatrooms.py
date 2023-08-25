@@ -16,8 +16,8 @@ db = PostgresqlDatabase(
 
 
 class UsersChatroom(Model):
-    user = ForeignKeyField(User, backref='userschatrooms')
-    chatroom = ForeignKeyField(Chatroom, backref='userschatrooms')
+    user = ForeignKeyField(User, backref='chatrooms')
+    chatroom = ForeignKeyField(Chatroom, backref='users')
 
     class Meta:
         database = db
