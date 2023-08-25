@@ -28,6 +28,7 @@ def token_user():
 
 comments_bp = Blueprint('comments', __name__)
 
+# Uses post id
 @comments_bp.route('/<int:id>', methods=['POST'])
 def create_comment(id):
     try:
@@ -49,7 +50,8 @@ def create_comment(id):
         return jsonify(comment.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
-    
+
+# Uses post id
 @comments_bp.route('/<int:id>', methods=['GET'])
 def get_comments(id):
     try:
@@ -60,3 +62,42 @@ def get_comments(id):
         return jsonify(comments), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
+    
+# Uses comment id
+@comments_bp.route('/<int:id>', methods=['PUT'])
+def update_comment(id):
+    try:
+        user = token_user()
+        comment = Comment.select().where(Comment.id == id, Comment.user == user).get()
+
+        if comment.user != user:
+            return jsonify({'error' : 'You do not have permission to change this'}), 403
+        
+        data = request.json
+
+        if 'text' in data:
+            comment.text = data['text']
+        comment.timestamp = datetime.utcnow()
+        comment.save()
+        return jsonify(comment.serialize()), 200
+    except Comment.DoesNotExist:
+        return jsonify({'error' : 'Comment not found'}), 404
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+
+# Uses comment id
+@comments_bp.route('/<int:id>', methods=['DELETE'])
+def delete_comment(id):
+    try:
+        user = token_user()
+        comment = Comment.select().where(Comment.id == id, Comment.user == user).get()
+        if comment.user != user:
+            return jsonify({'error' : 'You do not have permission to delete this'}), 403
+    
+        comment.delete()
+        return jsonify({'message' : 'Comment deleted successfully'}), 200
+    except Comment.DoesNotExist:
+        return jsonify({'error' : 'Comment not found'}), 404
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+        
