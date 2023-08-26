@@ -65,7 +65,7 @@ def get_comments(id):
     
 # Uses comment id
 @comments_bp.route('/<int:id>', methods=['PUT'])
-def update_comment(id):
+def edit_comment(id):
     try:
         user = token_user()
         comment = Comment.select().where(Comment.id == id, Comment.user == user).get()

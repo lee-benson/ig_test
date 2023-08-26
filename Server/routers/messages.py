@@ -67,3 +67,20 @@ def create_message(id):
         return jsonify(message.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
+
+# PUT uses message id
+@messages_bp.route('/<int:id>', methods=['PUT'])
+def edit_message(id):
+    try:
+        user = token_user()
+        message = Message.select().where(Message.id == id, Message.sender == user).get()
+        if not message:
+            return jsonify({'error' : 'Message not found'}), 404
+        
+        data = request.json
+        if 'text' in data:
+            message.text = data['text']
+        message.timestamp = datetime.utcnow()
+        return jsonify(message.serialize()), 200
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
