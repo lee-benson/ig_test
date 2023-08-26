@@ -2,6 +2,8 @@ import os
 from peewee import *
 from dotenv import load_dotenv
 from datetime import datetime
+from users import User
+from usersChatrooms import UsersChatroom
 
 load_dotenv()
 
@@ -17,6 +19,9 @@ db = PostgresqlDatabase(
 class Chatroom(Model):
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField()
+    name = CharField()
+    participants = ManyToManyField(User, backref='chatrooms', through_model=UsersChatroom)
+    direct_users = ForeignKeyField(User, backref='direct_chatroom', null=True)
 
     class Meta:
         database = db
