@@ -18,7 +18,7 @@ db = PostgresqlDatabase(
 class Message(Model):
     chatroom = ForeignKeyField(Chatroom, backref='messages')
     sender = ForeignKeyField(User, backref='messages_sent')
-    receiver = ForeignKeyField(User, backref='messages_received')
+    receiver = ManyToManyField(User, backref='messages_received')
     text = TextField()
     timestamp = DateTimeField()
 

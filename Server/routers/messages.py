@@ -52,15 +52,18 @@ def create_message(id):
         
         data = request.json
         
+        # Determine list of receivers (including the sender)
+
         receivers = [users.user for users in chatroom.users]
+        receivers.append(user)
 
         message = Message.create(
             chatroom=chatroom,
             sender=user,
-            receiver=receivers,
             text=data['text'],
             timestamp=datetime.utcnow(),
         )
+        message.receiver.add(receivers)
         return jsonify(message.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
