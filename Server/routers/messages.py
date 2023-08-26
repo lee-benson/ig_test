@@ -68,19 +68,36 @@ def create_message(id):
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-# PUT uses message id
+# EDIT uses message id
 @messages_bp.route('/<int:id>', methods=['PUT'])
 def edit_message(id):
     try:
         user = token_user()
         message = Message.select().where(Message.id == id, Message.sender == user).get()
-        if not message:
-            return jsonify({'error' : 'Message not found'}), 404
+        if message.user != user:
+            return jsonify({'error' : 'You do not have permission to delete this'}), 403
         
         data = request.json
         if 'text' in data:
             message.text = data['text']
         message.timestamp = datetime.utcnow()
         return jsonify(message.serialize()), 200
+    except Message.DoesNotExist:
+        return jsonify({'error' : 'Message not found'}), 404
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+    
+# DELETE uses message id
+@messages_bp.route('/<int:id>', methods=['DELETE'])
+def delete_message(id):
+    try:
+        user = token_user()
+        message = Message.select().where(Message.id == id, Message.user == user).get()
+        if message.user != user:
+            return jsonify({'error' : 'You do not have permission to delete this'}), 403
+        message.delete()
+        return jsonify({'message' : 'Message deleted successfully'}), 200
+    except Message.DoesNotExist:
+        return jsonify({'error' : 'Message not found'}), 404
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
