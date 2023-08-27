@@ -19,7 +19,7 @@ db = PostgresqlDatabase(
 class Chatroom(Model):
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField()
-    name = CharField()
+    name = CharField(default='Chat')
     participants = ManyToManyField(User, backref='chatrooms', through_model=UsersChatroom)
     direct_users = ForeignKeyField(User, backref='direct_chatroom', null=True)
 

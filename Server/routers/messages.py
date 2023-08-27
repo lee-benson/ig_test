@@ -41,9 +41,40 @@ def get_messages(id):
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-# CREATE uses chatroom id
+# CREATE direct message chat uses username
+@messages_bp.route('/<username>', methods=['POST'])
+def create_direct_message(username):
+    try:
+        # Check if DM already exists
+        # If true no DM: create DM, send message
+        # If false: just send message
+
+        user = token_user()
+        receiver = User.select().where(User.username == username).get()
+        
+        chatroom = Chatroom.select().where(Chatroom.direct_users == user, Chatroom.direct_users == receiver).get()
+        if not chatroom:
+            chatroom = Chatroom.create()
+            UsersChatroom.create(user=user, chatroom=chatroom)
+            UsersChatroom.create(user=receiver, chatroom=chatroom)
+
+        data = request.json
+
+        message = Message.create(
+            chatroom=chatroom,
+            sender=user,
+            receiver=receiver,
+            text=data['text']
+            timestamp=datetime.utcnow(),
+        )
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+
+
+
+# CREATE group chat uses chatroom id
 @messages_bp.route('/<int:id>', methods=['POST'])
-def create_message(id):
+def create_group_message(id):
     try:
         user = token_user()
         chatroom = Chatroom.select().where(Chatroom.id == id).get()
@@ -51,9 +82,8 @@ def create_message(id):
             return jsonify({'error' : 'Chatroom not found'}), 404
         
         data = request.json
-        
-        # Determine list of receivers (including the sender)
 
+        # Determine list of receivers (including the sender)
         receivers = [users.user for users in chatroom.users]
         receivers.append(user)
 
