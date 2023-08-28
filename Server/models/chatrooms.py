@@ -21,7 +21,8 @@ class Chatroom(Model):
     updated_at = DateTimeField()
     name = CharField(default='Chat')
     participants = ManyToManyField(User, backref='chatrooms', through_model=UsersChatroom)
-    direct_users = ForeignKeyField(User, backref='direct_chatroom', null=True)
+    initiator = ForeignKeyField(User, backref='DM_initiated')
+    direct_receiver = ForeignKeyField(User, backref='DM_received', null=True)
 
     class Meta:
         database = db

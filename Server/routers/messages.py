@@ -56,7 +56,7 @@ def create_direct_message(username):
         
         # if user B sends message to user A, so username is user A
         # Check if the direct_users is himself
-        chatroomReverse = Chatroom.select().where(Chatroom.direct_users == user)
+        chatroomReverse = Chatroom.select().where(Chatroom.direct_users == user).get()
         if not chatroom or not chatroomReverse:
             chatroom = Chatroom.create()
             UsersChatroom.create(user=user, chatroom=chatroom)
