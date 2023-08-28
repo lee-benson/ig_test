@@ -52,11 +52,12 @@ def create_direct_message(username):
         user = token_user()
         receiver = User.select().where(User.username == username).get()
         
-        chatroom = Chatroom.select().where(Chatroom.direct_users == receiver).get()
+        chatroom = Chatroom.select().where(Chatroom.initiator == user, Chatroom.direct_receiver == receiver).get()
         
         # if user B sends message to user A, so username is user A
-        # Check if the direct_users is himself
-        chatroomReverse = Chatroom.select().where(Chatroom.direct_users == user).get()
+        # Check if the direct_receiver is himself
+        initiator = User.select().where(User.username == username).get()
+        chatroomReverse = Chatroom.select().where(Chatroom.initiator == initiator, Chatroom.direct_receiver == user).get()
         if not chatroom or not chatroomReverse:
             chatroom = Chatroom.create()
             UsersChatroom.create(user=user, chatroom=chatroom)
