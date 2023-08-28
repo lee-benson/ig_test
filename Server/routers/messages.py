@@ -65,10 +65,10 @@ def create_direct_message(username):
         data = request.json
 
         message = Message.create(
-            chatroom=chatroom,
+            chatroom=chatroom if chatroom else chatroomReverse,
             sender=user,
             receiver=receiver,
-            text=data['text']
+            text=data['text'],
             timestamp=datetime.utcnow(),
         )
         return jsonify(message.serialize()), 200
