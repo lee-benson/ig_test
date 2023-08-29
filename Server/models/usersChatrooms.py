@@ -13,7 +13,7 @@ db = PostgresqlDatabase(
     host='localhost',
     port=5432,
 )
-
+ 
 # Creates association between users and their chatrooms
 class UsersChatroom(Model):
     user = ForeignKeyField(User, backref='chatrooms')

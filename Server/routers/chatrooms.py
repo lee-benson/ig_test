@@ -5,6 +5,7 @@ from flask import Blueprint, request, jsonify
 from datetime import datetime
 from ..models.chatrooms import Chatroom
 from ..models.users import User
+from ..models.chatrooms import UsersChatroom
 from dotenv import load_dotenv
 import os
 import jwt
@@ -31,9 +32,21 @@ def token_user():
 chatrooms_bp = Blueprint('chatrooms', __name__)
 
 # GET all chatrooms (DM & GC)
-@chatrooms_bp.rotue('/<username>', methods=['GET'])
-def get_all_chatrooms(username):
+@chatrooms_bp.route('/', methods=['GET'])
+def get_all_chatrooms():
     try:
         user = token_user()
+        dm_initiate_chatrooms = Chatroom.select().where(Chatroom.initiator == user).get()
+        dm_receive_chatrooms = Chatroom.select().where(Chatroom.direct_receiver == user).get()
+        gc_chatrooms = Chatroom.select().join(UsersChatroom).where(
+            UsersChatroom.user == user,
+            UsersChatroom.chatroom == Chatroom.id
+        )
+
+        # Combine the chatrooms
+        all_chatrooms = dm_initiate_chatrooms | dm_receive_chatrooms | gc_chatrooms
+        
+        chatroom_data = [chatroom.serialize() for chatroom in all_chatrooms]
+        return jsonify(chatroom_data), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
