@@ -50,3 +50,20 @@ def get_all_chatrooms():
         return jsonify(chatroom_data), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
+
+# CREATE a chatroom (GC)
+@chatrooms_bp.route('/', methods=['POST'])
+def create_group_chatroom():
+    try:
+        user = token_user()
+        data = request.json
+
+        chatroom = Chatroom.create(
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+            name=data['name'],
+            participants=data['participants'],
+        )
+        return jsonify(chatroom.serialize()), 200
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
