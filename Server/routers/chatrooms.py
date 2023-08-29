@@ -57,13 +57,30 @@ def create_group_chatroom():
     try:
         user = token_user()
         data = request.json
-
+        
+        # Need to get participants from request data
         chatroom = Chatroom.create(
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
             name=data['name'],
             participants=data['participants'],
         )
+        return jsonify(chatroom.serialize()), 200
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+  
+# UPDATE a chatroom (GC)
+@chatrooms_bp.route('/<int:id>', methods=['PUT'])
+def update_group_chatroom(id):
+    try:
+        user = token_user()
+        chatroom = Chatroom.select().where(Chatroom.id == id).get()
+        if user not in chatroom.participants:
+            return jsonify({'error' : 'You do not have permission to edit this chatroom'}), 403
+        
+        data = request.json
+        if 'name' in data:
+            chatroom.name = data['name']
+        chatroom.updated_at = datetime.utcnow()
+        chatroom.save()
         return jsonify(chatroom.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500

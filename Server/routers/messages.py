@@ -117,6 +117,7 @@ def edit_message(id):
         if 'text' in data:
             message.text = data['text']
         message.timestamp = datetime.utcnow()
+        message.save()
         return jsonify(message.serialize()), 200
     except Message.DoesNotExist:
         return jsonify({'error' : 'Message not found'}), 404
