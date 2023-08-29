@@ -1,11 +1,13 @@
 # CRUD
 # Create is for group chat (For DM see routers/messages)
 
+from peewee import *
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 from ..models.chatrooms import Chatroom
 from ..models.users import User
 from ..models.chatrooms import UsersChatroom
+from ..models.createTables import db
 from dotenv import load_dotenv
 import os
 import jwt
@@ -81,6 +83,22 @@ def update_group_chatroom(id):
             chatroom.name = data['name']
         chatroom.updated_at = datetime.utcnow()
         chatroom.save()
+        return jsonify(chatroom.serialize()), 200
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
+
+# DELETE? removes yourself from participants
+@chatrooms_bp.route('/<int:id>', methods=['DELETE'])
+def leave_group_chatroom(id):
+    try:
+        user = token_user()
+        chatroom = Chatroom.select().where(Chatroom.id == id).get()
+        if user not in chatroom.participants:
+            return jsonify({'error' : 'You are not in this chatroom'}), 403
+
+        with db.atomic():
+            chatroom.participants.remove(user)
+            chatroom.save()
         return jsonify(chatroom.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
