@@ -8,11 +8,11 @@ load_dotenv()
 
 TOKEN_KEY = os.environ.get('TOKEN_KEY')
 
-def verify_Auth():
+def verify_auth():
     try:
         auth_header = request.headers.get('Authorization')
         if not auth_header:
-            return jsonify({'error': 'Missing authorization header'}), 401
+            return jsonify({'error': 'Missing authorization header'}), 401 
         token = auth_header.split()[1]
         decoded_token = jwt.decode(token, TOKEN_KEY, algorithms=['HS256'])
         user = User.get(User.id == decoded_token['user_id'])

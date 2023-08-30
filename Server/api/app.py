@@ -18,6 +18,7 @@ app.register_blueprint(chatrooms_bp)
 @app.before_request
 def before_request():
     if request.endpoint in ['CREATE', 'PUT', 'DELETE']:
+        # Middleware authentication
         verify_auth()
 
 
