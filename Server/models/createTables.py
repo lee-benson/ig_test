@@ -7,6 +7,7 @@ from comments import Comment
 from chatrooms import Chatroom
 from messages import Message
 from usersChatrooms import UsersChatroom
+from followers import Follower
 
 load_dotenv()
 
@@ -21,7 +22,8 @@ db = PostgresqlDatabase(
 # Create Tables
 
 db.connect()
-db.create_tables([User, Post, Comment, Chatroom, Message, UsersChatroom])
+db.create_tables([User, Post, Follower, Comment, Chatroom, Message, UsersChatroom])
+db.close()
 
 # Next step would be to seed data/ create dummy data
 

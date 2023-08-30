@@ -1,6 +1,6 @@
 from flask import Flask, request
 from ..models.createTables import db
-from ..routers import auth_bp, users_bp, posts_bp, comments_bp, messages_bp, chatrooms_bp
+from ..views import auth_bp, users_bp, posts_bp, comments_bp, messages_bp, chatrooms_bp
 from ..middleware import verify_auth
 
 

@@ -19,7 +19,7 @@ db = PostgresqlDatabase(
 # user1.following queries users that user1 is following (user1 is a follower)
 # user1.followers queries users that follow user1 (user1 is a followee)
 
-class follower(Model):
+class Follower(Model):
     follower = ForeignKeyField(User, backref='following') 
     followee = ForeignKeyField(User, backref='followers')
 
