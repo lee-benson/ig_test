@@ -6,7 +6,7 @@ from users import User
 load_dotenv()
 
 db = PostgresqlDatabase(
-    'trusting_wu',
+    'ig_test_devDB',
     user=os.environ.get('SUP_USER'),
     password=os.environ.get('SUP_USERPW'),
     host='localhost',

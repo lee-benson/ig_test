@@ -7,7 +7,7 @@ from users import User
 load_dotenv()
 
 db = PostgresqlDatabase(
-    'trusting_wu',
+    'ig_test_devDB',
     user=os.environ.get('SUP_USER'),
     password=os.environ.get('SUP_USERPW'),
     host='localhost',
@@ -16,8 +16,8 @@ db = PostgresqlDatabase(
 
 
 class Chatroom(Model):
-    created_at = DateTimeField(default=datetime.datetime.now)
-    updated_at = DateTimeField(default=datetime.datetime.now)
+    created_at = DateTimeField(default=datetime.utcnow)
+    updated_at = DateTimeField(default=datetime.utcnow)
     name = CharField(default='Chat')
     initiator = ForeignKeyField(User, backref='dm_initiated', null=True)
     direct_receiver = ForeignKeyField(User, backref='dm_received', null=True)
