@@ -4,10 +4,10 @@
 from peewee import *
 from flask import Blueprint, request, jsonify
 from datetime import datetime
-from ..models.chatrooms import Chatroom
-from ..models.users import User
-from ..models.chatrooms import UsersChatroom
 from ..models.createTables import db
+from ..models.users import User
+from ..models.chatrooms import Chatroom
+from ..models.chatrooms import UsersChatroom
 from dotenv import load_dotenv
 import os
 import jwt
@@ -59,12 +59,20 @@ def create_group_chatroom():
     try:
         user = token_user()
         data = request.json
-        
         # Need to get participants from request data
+        participants = data.get('participants', [])
+        
         chatroom = Chatroom.create(
             name=data['name'],
-            participants=data['participants'],
+            initiator=user,
         )
+
+        # Add participants to the chatroom using the association table
+        with db.atomic():
+            for participant_id in participants:
+                user_chatroom = UsersChatroom.create(user=participant_id, chatroom=chatroom)
+                user_chatroom.save()
+                
         return jsonify(chatroom.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
@@ -75,7 +83,7 @@ def update_group_chatroom(id):
     try:
         user = token_user()
         chatroom = Chatroom.select().where(Chatroom.id == id).get()
-        if user not in chatroom.participants:
+        if user not in chatroom.users:
             return jsonify({'error' : 'You do not have permission to edit this chatroom'}), 403
         
         data = request.json
@@ -93,12 +101,11 @@ def leave_group_chatroom(id):
     try:
         user = token_user()
         chatroom = Chatroom.select().where(Chatroom.id == id).get()
-        if user not in chatroom.participants:
+        if user not in chatroom.users:
             return jsonify({'error' : 'You are not in this chatroom'}), 403
 
-        with db.atomic():
-            chatroom.participants.remove(user)
-            chatroom.save()
+        chatroom.users.remove(user)
+        chatroom.save()
         return jsonify(chatroom.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
