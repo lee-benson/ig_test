@@ -12,7 +12,7 @@ from followers import Follower
 load_dotenv()
 
 db = PostgresqlDatabase(
-    'ig_test_devDB',
+    'ig_test_devdb',
     user=os.environ.get('SUP_USER'),
     password=os.environ.get('SUP_USERPW'),
     host='localhost',
