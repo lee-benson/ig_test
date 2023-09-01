@@ -6,6 +6,8 @@ from ..models.posts import Post
 from ..models.messages import Message
 from ..models.comments import Comment
 from ..models.chatrooms import Chatroom
+from ..models.followers import Follower
+from ..models.usersChatrooms import UsersChatroom
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import os
@@ -70,6 +72,47 @@ def seed_posts():
             )
             print(f"User '{user.username}' just sent this.")
 
+def seed_followers():
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
+
+        first_follower_relation = Follower.create(
+            follower=first_user,
+            followee=sec_user,
+        )
+        sec_follower_relation = Follower.create(
+            follower=sec_user,
+            followee=first_user, 
+        )        
+        third_follower_relation = Follower.create(
+            follower=third_user,
+            followee=fourth_user,
+        )        
+        fourth_follower_relation = Follower.create(
+            follower=fourth_user,
+            followee=third_user,
+        )
+        fifth_follower_relation = Follower.create(
+            follower=third_user,
+            followee=first_user,
+        )
+        sixth_follower_relation = Follower.create(
+            follower=fourth_user,
+            followee=first_user,
+        )
+        seventh_follower_relation = Follower.create(
+            follower=sec_user,
+            followee=third_user,
+        )
+        eighth_follower_relation = Follower.create(
+            follower=sec_user,
+            followee=fourth_user,
+        )
+        print(f"If you see this : '{first_follower_relation.follower}' is a massive nerd.")
+
 def seed_comments():
     with db.atomic():
         first_user = User.get(User.username == 'user1')
@@ -125,7 +168,7 @@ def seed_chatrooms():
         first_user = User.get(User.username == 'user1')
         sec_user = User.get(User.username == 'user2')
         
-        first_chatroom = Chatroom.create(
+        dm_chatroom = Chatroom.create(
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
             name='XxXFrenemies4EverXxX',
@@ -140,4 +183,22 @@ def seed_chatrooms():
             name='RevengersAssembled',
             initiator=first_user,
         )
+
+def seed_messages():
+    with db.atomic():
+        # Dm Messages
+
+        sender = User.get(User.username == 'user1')
+        receiver = User.get(User.username == 'user2')
+
+        dm_chatroom = Chatroom.get(Chatroom.name == 'dm_chatroom')
+
+        dm_message = Message.create(
+            chatroom=dm_chatroom,
+            sender=sender,
+            receiver=receiver,
+            text='Don\'t tell the others but I actually follow you',
+            timestamp=datetime.utcnow(),
+        )
+
         
