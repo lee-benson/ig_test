@@ -31,6 +31,8 @@ def seed_users():
         user_data = [
             {'username' : 'user1', 'password' : 'password1'},
             {'username' : 'user2', 'password' : 'password2'},
+            {'username' : 'user3', 'password' : 'password3'},
+            {'username' : 'user4', 'password' : 'password4'},
         ]
 
         for data in user_data:
@@ -49,16 +51,20 @@ def seed_posts():
         
         first_user = User.get(User.username == 'user1')
         sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
         users = [
             first_user,
             sec_user,
+            third_user,
+            fourth_user,
         ]
 
         for user in users:
             post = Post.create(
                 user=user,
-                caption='Wow are these two posts exactly the same.',
+                caption='Wow are these four posts exactly the same.',
                 image_url='https://gogocdn.net/cover/86.png',
                 timestamp=datetime.utcnow(),
             )
@@ -68,9 +74,13 @@ def seed_comments():
     with db.atomic():
         first_user = User.get(User.username == 'user1')
         sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
         first_post = Post.get(Post.user == first_user)
         sec_post = Post.get(Post.user == sec_user)
+        third_post = Post.get(Post.user == third_user)
+        fourth_post = Post.get(Post.user == fourth_user)
 
         first_comment = Comment.create(
             user=first_user,
@@ -96,11 +106,38 @@ def seed_comments():
             text='You stole my post bruh. The lack of originality is appalling.',
             timestamp=datetime.utcnow(),
         )
-        print(f"If this worked you'll see this : '{fourth_comment.text}'")
+        fifth_comment = Comment.create(
+            user=third_user,
+            post=fourth_post,
+            text='Honestly, I just think you are really cool.',
+            timestamp=datetime.utcnow(),
+        )
+        sixth_comment = Comment.create(
+            user=fourth_user,
+            post=third_post,
+            text='I read your comment on my post and I think you are really cool too.',
+            timestamp=datetime.utcnow(),
+        )
+        print(f"If this worked you'll see this : '{fifth_comment.text}'")
 
-
+def seed_chatrooms():
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
         
+        first_chatroom = Chatroom.create(
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+            name='XxXFrenemies4EverXxX',
+            initiator=first_user,
+            direct_receiver=sec_user,
+        )
 
-
-
+        # GC relations will be fleshed with UsersChatroom junction table
+        group_chatroom = Chatroom.create(
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+            name='RevengersAssembled',
+            initiator=first_user,
+        )
         
