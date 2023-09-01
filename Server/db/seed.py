@@ -62,7 +62,41 @@ def seed_posts():
                 image_url='https://gogocdn.net/cover/86.png',
                 timestamp=datetime.utcnow(),
             )
-            print(f"User '{User.username}' just sent this.")
+            print(f"User '{user.username}' just sent this.")
+
+def seed_comments():
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+
+        first_post = Post.get(Post.user == first_user)
+        sec_post = Post.get(Post.user == sec_user)
+
+        first_comment = Comment.create(
+            user=first_user,
+            post=sec_post,
+            text='You stole my post bruh. The lack of originality is appalling.',
+            timestamp=datetime.utcnow(),
+        )
+        sec_comment = Comment.create(
+            user=first_user,
+            post=sec_post,
+            text='Actually, I\'m not even that mad because it\'s a nice post.',
+            timestamp=datetime.utcnow(),
+        )
+        third_comment = Comment.create(
+            user=sec_user,
+            post=sec_post,
+            text='You stole my post @first_user. The lack of originality is appalling.',
+            timestamp=datetime.utcnow(),
+        )
+        fourth_comment = Comment.create(
+            user=sec_user,
+            post=first_post,
+            text='You stole my post bruh. The lack of originality is appalling.',
+            timestamp=datetime.utcnow(),
+        )
+        print(f"If this worked you'll see this : '{fourth_comment.text}'")
 
 
         
