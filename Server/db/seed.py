@@ -167,7 +167,7 @@ def seed_chatrooms():
     with db.atomic():
         first_user = User.get(User.username == 'user1')
         sec_user = User.get(User.username == 'user2')
-        
+
         dm_chatroom = Chatroom.create(
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
@@ -183,22 +183,138 @@ def seed_chatrooms():
             name='RevengersAssembled',
             initiator=first_user,
         )
+        print(f"Chatroom seeding worked : '{dm_chatroom.name}'.")
+
+def seed_users_chatrooms():
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
+
+        dm_chatroom = Chatroom.get(Chatroom.name == 'XxXFrenemies4EverXxX')
+        group_chatroom = Chatroom.get(Chatroom.name == 'RevengersAssembled')
+
+        dm_chatroom_first_user = UsersChatroom.create(
+            user=first_user,
+            chatroom=dm_chatroom,
+        )
+        dm_chatroom_sec_user = UsersChatroom.create(
+            user=sec_user,
+            chatroom=dm_chatroom,
+        )
+
+        # Group chat
+        group_chatroom_first_user = UsersChatroom.create(
+            user=first_user,
+            chatroom=group_chatroom,
+        )
+        group_chatroom_sec_user = UsersChatroom.create(
+            user=sec_user,
+            chatroom=group_chatroom,
+        )
+        group_chatroom_third_user = UsersChatroom.create(
+            user=third_user,
+            chatroom=group_chatroom,
+        )
+        group_chatroom_fourth_user = UsersChatroom.create(
+            user=fourth_user,
+            chatroom=group_chatroom,
+        )
+        print(f"UsersChatroom works and : '{group_chatroom_first_user.chatroom}' sucks.")
 
 def seed_messages():
     with db.atomic():
         # Dm Messages
 
-        sender = User.get(User.username == 'user1')
-        receiver = User.get(User.username == 'user2')
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
-        dm_chatroom = Chatroom.get(Chatroom.name == 'dm_chatroom')
+        dm_chatroom = Chatroom.get(Chatroom.name == 'XxXFrenemies4EverXxX')
+        group_chatroom = Chatroom.get(Chatroom.name == 'RevengersAssembled')
 
-        dm_message = Message.create(
+        first_dm_message = Message.create(
             chatroom=dm_chatroom,
-            sender=sender,
-            receiver=receiver,
+            sender=first_user,
+            receiver=sec_user,
             text='Don\'t tell the others but I actually follow you',
             timestamp=datetime.utcnow(),
         )
+        sec_dm_message = Message.create(
+            chatroom=dm_chatroom,
+            sender=sec_user,
+            receiver=first_user,
+            text='Yeah I got you. Secret best buddies.',
+            timestamp=datetime.utcnow(),
+        )
+        third_dm_message = Message.create(
+            chatroom=dm_chatroom,
+            sender=sec_user,
+            receiver=first_user,
+            text='The bestest of friends, our bond is one of a kind.',
+            timestamp=datetime.utcnow(),
+        )
+        fourth_dm_message = Message.create(
+            chatroom=dm_chatroom,
+            sender=first_user,
+            receiver=sec_user,
+            text='Please never string those words in that order ever again.',
+            timestamp=datetime.utcnow(),
+        )
+        fifth_dm_message = Message.create(
+            chatroom=dm_chatroom,
+            sender=sec_user,
+            receiver=first_user,
+            text='A kind bond, of our friends one is of the bestest.',
+            timestamp=datetime.utcnow(),
+        )
+        sixth_dm_message = Message.create(
+            chatroom=dm_chatroom,
+            sender=first_user,
+            receiver=sec_user,
+            text='I can\'t say it\'s been nice knowing you because it hasn\'t been. Unfollowed.',
+            timestamp=datetime.utcnow(),
+        )
 
+        # Group chat messages 
+        first_group_message = Message.create(
+            chatroom=group_chatroom,
+            sender=first_user,
+            receiver=[first_user, sec_user, third_user, fourth_user],
+            text='Does this thing work?',
+            timestamp=datetime.utcnow(),
+        )
+        sec_group_message = Message.create(
+            chatroom=group_chatroom,
+            sender=sec_user,
+            receiver=[first_user, sec_user, third_user, fourth_user],
+            text='Does it?',
+            timestamp=datetime.utcnow(),
+        )
+        third_group_message = Message.create(
+            chatroom=group_chatroom,
+            sender=third_user,
+            receiver=[first_user, sec_user, third_user, fourth_user],
+            text='I mean yeah I can see your messages.',
+            timestamp=datetime.utcnow(),
+        )
+        fourth_group_message = Message.create(
+            chatroom=group_chatroom,
+            sender=fourth_user,
+            receiver=[first_user, sec_user, third_user, fourth_user],
+            text='It\'s a Christmas miracle that this works.',
+            timestamp=datetime.utcnow(),
+        )
+        fifth_group_message = Message.create(
+            chatroom=group_chatroom,
+            sender=first_user,
+            receiver=[first_user, sec_user, third_user, fourth_user],
+            text='Hey fourth_user, you\'re lack of faith is showing.',
+            timestamp=datetime.utcnow(),
+        )
+        print(f"Please work for the love of baby Jesus : '{fourth_group_message.text}'")
+
+        
         
