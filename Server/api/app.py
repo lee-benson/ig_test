@@ -1,10 +1,11 @@
 from flask import Flask, request
+from flask_socketio import SocketIO
 from ..models.createTables import db
 from ..views import auth_bp, users_bp, posts_bp, comments_bp, messages_bp, chatrooms_bp
 from ..middleware import verify_auth
 
-
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 # Register blueprints
 
@@ -22,5 +23,10 @@ def before_request():
         verify_auth()
 
 
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+
 if __name__ == "__main__":
-    app.run()
+    socketio.run(app, debug=True)

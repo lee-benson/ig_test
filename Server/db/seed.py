@@ -316,5 +316,13 @@ def seed_messages():
         )
         print(f"Please work for the love of baby Jesus : '{fourth_group_message.text}'")
 
-        
-        
+
+
+seed_users()
+seed_posts()
+seed_followers()
+seed_comments()
+seed_chatrooms()    
+seed_users_chatrooms()
+seed_messages()
+db.close()
