@@ -4,6 +4,8 @@ from ..models.users import User
 from ..models.chatrooms import Chatroom
 from ..models.messages import Message
 from ..models.usersChatrooms import UsersChatroom
+from flask_socketio import emit
+from . import socketio 
 import os
 import jwt
 from dotenv import load_dotenv
@@ -72,6 +74,14 @@ def create_direct_message(username):
             text=data['text'],
             timestamp=datetime.utcnow(),
         )
+        message_data = {
+            'chatroom': chatroom.id if chatroom else chatroomReverse.id,
+            'sender': user.id,
+            'receiver': receiver.id,
+            'text': data['text'],
+            'timestamp': datetime.utcnow().isoformat(),
+        }
+        socketio.emit('new_message', message_data, room=f'chatroom_{chatroom.id}')
         return jsonify(message.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
