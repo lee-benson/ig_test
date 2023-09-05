@@ -22,10 +22,21 @@ def before_request():
         # Middleware authentication
         verify_auth()
 
-
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
+
+@socketio.on('new_message')
+def handle_new_message(message_data):
+    try:
+        # Validating data
+        if 'chatroom_id' in message_data and 'sender_id' in message_data and 'text' in message_data and 'timestamp' in message_data:
+            chatroom_id = message_data['chatroom_id']
+            socketio.emit('new_message', message_data, room=f'chatroom_{chatroom_id}')                
+        else:
+            print('Invalid message_data: Missing one or more required fields')
+    except Exception as e:
+        print(f'Error handling new message : {str(e)}')
 
 
 if __name__ == "__main__":
