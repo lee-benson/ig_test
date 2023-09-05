@@ -77,9 +77,9 @@ def create_direct_message(username):
             timestamp=datetime.utcnow(),
         )
         message_data = {
-            'chatroom': selected_chatroom.id,
-            'sender': user.id,
-            'receiver': receiver.id,
+            'chatroom_id': selected_chatroom.id,
+            'sender_id': user.id,
+            'receiver_id': receiver.id,
             'text': data['text'],
             'timestamp': datetime.utcnow().isoformat(),
         }
@@ -112,6 +112,14 @@ def create_group_message(id):
             timestamp=datetime.utcnow(),
         )
         message.receiver.add(receivers)
+        # Unnecessary to specify individual ids for the socket section, chatroom is sufficient.
+        message_data = {
+            'chatroom_id': chatroom.id,
+            'sender_id': user.id,
+            'text': data['text'],
+            'timestamp': datetime.utcnow().isofromat(),
+        }
+        socketio.emit('new_message', message_data, room=f'chatroom_{chatroom.id}')
         return jsonify(message.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
