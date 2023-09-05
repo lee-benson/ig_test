@@ -67,15 +67,17 @@ def create_direct_message(username):
 
         data = request.json
 
+        selected_chatroom = chatroom if chatroom else chatroomReverse
+
         message = Message.create(
-            chatroom=chatroom if chatroom else chatroomReverse,
+            chatroom=selected_chatroom,
             sender=user,
             receiver=receiver,
             text=data['text'],
             timestamp=datetime.utcnow(),
         )
         message_data = {
-            'chatroom': chatroom.id if chatroom else chatroomReverse.id,
+            'chatroom': selected_chatroom.id,
             'sender': user.id,
             'receiver': receiver.id,
             'text': data['text'],
