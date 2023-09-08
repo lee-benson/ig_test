@@ -2,12 +2,13 @@
 # Create is for group chat (For DM see routers/messages)
 
 from peewee import *
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, json
 from datetime import datetime
 from ..models.createTables import db
 from ..models.users import User
 from ..models.chatrooms import Chatroom
 from ..models.chatrooms import UsersChatroom
+from ..cache.redis_cache import *
 from dotenv import load_dotenv
 import os
 import jwt
@@ -48,8 +49,16 @@ def get_all_chatrooms():
         # Combine the chatrooms
         all_chatrooms = dm_initiate_chatrooms | dm_receive_chatrooms | gc_chatrooms
         
-        chatroom_data = [chatroom.serialize() for chatroom in all_chatrooms]
-        return jsonify(chatroom_data), 200
+        # redis cache
+        chat_cache_key = f'cache_key_chat_user_{user.id}'
+        cached_chats = get_data_from_cache(chat_cache_key)
+        if cached_chats is not None:
+            chatrooms = json.loads(cached_chats)
+        else:
+            chatrooms = [chatroom.serialize() for chatroom in all_chatrooms]
+            set_data_in_cache(chat_cache_key, chats_ttl, json.dumps(chatrooms))
+            
+        return jsonify(chatrooms), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 

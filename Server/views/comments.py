@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, json
 from datetime import datetime
 from ..models.users import User
 from ..models.posts import Post
 from ..models.comments import Comment
+from ..cache.redis_cache import *
 import jwt
 import os
 from dotenv import load_dotenv
@@ -55,10 +56,20 @@ def create_comment(id):
 @comments_bp.route('/<int:id>', methods=['GET'])
 def get_comments(id):
     try:
+        user = token_user()
         post = Post.select().where(Post.id == id).get()
         if not post:
             return jsonify({'error' : 'Post not found'}), 404
-        comments = [comment.serialize() for comment in post.comments]
+        
+        # redis cache
+        comment_cache_key = f'cache_key_comment_user_{user.id}'
+        cached_comments = get_data_from_cache(comment_cache_key)
+        if cached_comments is not None:
+            comments = json.loads(cached_comments)
+        else:
+            comments = [comment.serialize() for comment in post.comments]
+            set_data_in_cache(comment_cache_key, comments_ttl, json.dumps(comments))
+          
         return jsonify(comments), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
