@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, json
 from datetime import datetime, timedelta
 from ..models.users import User
 from ..models.chatrooms import Chatroom
 from ..models.messages import Message
 from ..models.usersChatrooms import UsersChatroom
+from ..cache.redis_cache import *
 from flask_socketio import emit
 from . import socketio 
 import os
@@ -35,10 +36,22 @@ messages_bp = Blueprint('messages', __name__)
 @messages_bp.route('/<int:id>', methods=['GET'])
 def get_messages(id):
     try:
+        user = token_user()
+
         chatroom = Chatroom.select().where(Chatroom.id == id).get()
         if not chatroom:
             return jsonify({'error' : 'Chatroom not found'}), 404
-        messages = [message.serialize() for message in chatroom.messages]
+        
+        # redis cache
+        message_cache_key = f'cache_key_message_user_{user.id}'
+        cached_messages = get_data_from_cache(message_cache_key)
+
+        if cached_messages is not None:
+            messages = json.loads(cached_messages)
+        else:
+            messages = [message.serialize() for message in chatroom.messages]
+            set_data_in_cache(message_cache_key, messages_ttl, json.dumps(messages))
+            
         return jsonify(messages), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500

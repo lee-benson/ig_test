@@ -49,7 +49,7 @@ def get_posts():
             posts = [post.serialize() for post in posts]
 
             # Store fetched data into redis cache
-            set_data_in_cache(post_cache_key, json.dumps(posts), posts_ttl)
+            set_data_in_cache(post_cache_key, posts_ttl, json.dumps(posts))
 
         #  Return serialized data back to client
 
