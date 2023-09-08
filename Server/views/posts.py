@@ -1,10 +1,11 @@
 # CRUD for posts
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, json
 from datetime import datetime, timedelta
 from posts import Post
 from ..models.users import User
 from ..models.followers import Follower
+from ..cache.redis_cache import *
 import jwt
 import os
 from dotenv import load_dotenv
@@ -25,7 +26,9 @@ posts_bp = Blueprint('posts', __name__)
 def get_posts():
     try:
         data = request.json
-        username = data['username']
+
+        if 'username' in data:
+            username = data['username']
 
         user = User.select().where(User.username == username).get()
 
@@ -34,12 +37,23 @@ def get_posts():
         followees = [follower.followee for follower in user.following]
 
         # Query followee's posts ('<<' means included)
+        # Adding redis cache
 
-        posts = Post.select().where(Post.user << followees).order_by(Post.timestamp.desc())
+        post_cache_key = f'cache_key_post_user_{user.id}'
+        cached_posts = get_data_from_cache(post_cache_key)
+        # The cached data exists 
+        if cached_posts is not None:
+            posts = json.loads(cached_posts)
+        else:
+            posts = Post.select().where(Post.user << followees).order_by(Post.timestamp.desc())
+            posts = [post.serialize() for post in posts]
+
+            # Store fetched data into redis cache
+            set_data_in_cache(post_cache_key, json.dumps(posts), posts_ttl)
 
         #  Return serialized data back to client
 
-        return jsonify([post.serialize() for post in posts]), 200
+        return jsonify(posts), 200
     except User.DoesNotExist:
         return jsonify({'error' : 'User not found'}), 404
     except Exception as e:

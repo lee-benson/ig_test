@@ -15,16 +15,19 @@ def get_data_from_cache(cache_key):
 def set_data_in_cache(cache_key, ttl, data):
     redis_client.setex(cache_key, ttl, data)
 
-# Post_cache_key = f'cache_key_post_user_{user_id}'
-# Comment_cache_key = f'cache_key_comment_user_{user_id}'
-# Chat_cache_key = f'cache_key_chat_user_{user_id}'
-# Message_cache_key = f'cache_key_message_user_{user_id}'
+# post_cache_key = f'cache_key_post_user_{user_id}'
+# comment_cache_key = f'cache_key_comment_user_{user_id}'
+# chat_cache_key = f'cache_key_chat_user_{user_id}'
+# message_cache_key = f'cache_key_message_user_{user_id}'
 
 # Set TTLs for different data
-
-posts_ttl = 86400 # 24 hours
+posts_ttl = 3600 # 1 hour
 comments_ttl = 300 # 5 minutes 
 messages_ttl = 300 
 chats_ttl = 300
+
+# Cache pruning could be implemented for Posts, Message, Comments (Chat(?))
+
+
 
 
