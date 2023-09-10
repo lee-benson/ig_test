@@ -15,10 +15,10 @@ def get_data_from_cache(cache_key):
 def set_data_in_cache(cache_key, ttl, data):
     redis_client.setex(cache_key, ttl, data)
 
-# post_cache_key = f'cache_key_post_user_{user_id}'
-# comment_cache_key = f'cache_key_comment_user_{user_id}'
-# chat_cache_key = f'cache_key_chat_user_{user_id}'
-# message_cache_key = f'cache_key_message_user_{user_id}'
+# post_cache_key = f'cache_key_post_user_{user.id}'
+# comment_cache_key = f'cache_key_comment_user_{user.id}'
+# chat_cache_key = f'cache_key_chat_user_{user.id}'
+# message_cache_key = f'cache_key_message_user_{user.id}'
 
 # Set TTLs for different data
 posts_ttl = 3600 # 1 hour
