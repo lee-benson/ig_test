@@ -3,7 +3,9 @@ from flask_socketio import SocketIO
 from ..models.createTables import db
 from ..views import auth_bp, users_bp, posts_bp, comments_bp, messages_bp, chatrooms_bp
 from ..middleware import verify_auth
+import sys
 
+sys.path.append('/Users/bensonlee/dev/ig_test')
 app = Flask(__name__)
 socketio = SocketIO(app)
 

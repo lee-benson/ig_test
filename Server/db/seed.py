@@ -1,7 +1,7 @@
 from peewee import *
 from flask import request, jsonify
-from ..models.createTables import db
 from ..models.users import User
+from ..models.createTables import db
 from ..models.posts import Post
 from ..models.messages import Message
 from ..models.comments import Comment
