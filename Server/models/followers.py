@@ -1,7 +1,7 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from users import User
+from .users import User
 
 load_dotenv()
 

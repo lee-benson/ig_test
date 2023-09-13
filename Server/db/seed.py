@@ -1,6 +1,6 @@
 from peewee import *
 from flask import request, jsonify
-from ..models.users import User
+import models
 from ..models.createTables import db
 from ..models.posts import Post
 from ..models.messages import Message
@@ -44,17 +44,17 @@ def seed_users():
             # Hash password
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-            user = User.create(username=username, password=hashed_password)
+            user = models.User.create(username=username, password=hashed_password)
             token = generate_token(user)
             print(f"User '{username}' with token : '{token}' has been created.")
 
 def seed_posts():
     with db.atomic():
         
-        first_user = User.get(User.username == 'user1')
-        sec_user = User.get(User.username == 'user2')
-        third_user = User.get(User.username == 'user3')
-        fourth_user = User.get(User.username == 'user4')
+        first_user = models.User.get(models.User.username == 'user1')
+        sec_user = models.User.get(models.User.username == 'user2')
+        third_user = models.User.get(models.User.username == 'user3')
+        fourth_user = models.User.get(models.User.username == 'user4')
 
         users = [
             first_user,

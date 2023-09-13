@@ -1,8 +1,7 @@
 from flask import Flask, request
 from flask_socketio import SocketIO
-from ..models.createTables import db
-from ..views import auth_bp, users_bp, posts_bp, comments_bp, messages_bp, chatrooms_bp
-from ..middleware import verify_auth
+import views 
+import middleware
 import sys
 
 sys.path.append('/Users/bensonlee/dev/ig_test')
@@ -11,18 +10,18 @@ socketio = SocketIO(app)
 
 # Register blueprints
 
-app.register_blueprint(auth_bp)
-app.register_blueprint(users_bp)
-app.register_blueprint(posts_bp)
-app.register_blueprint(comments_bp)
-app.register_blueprint(messages_bp)
-app.register_blueprint(chatrooms_bp)
+app.register_blueprint(views.auth_bp)
+app.register_blueprint(views.users_bp)
+app.register_blueprint(views.posts_bp)
+app.register_blueprint(views.comments_bp)
+app.register_blueprint(views.messages_bp)
+app.register_blueprint(views.chatrooms_bp)
 
 @app.before_request
 def before_request():
     if request.endpoint in ['CREATE', 'PUT', 'DELETE']:
         # Middleware authentication
-        verify_auth()
+        middleware.verify_auth()
 
 @socketio.on('connect')
 def handle_connect():

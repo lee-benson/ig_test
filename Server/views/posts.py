@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, jsonify, json
 from datetime import datetime, timedelta
-from posts import Post
+from ..models.posts import Post
 from ..models.users import User
 from ..models.followers import Follower
 from ..cache.redis_cache import *

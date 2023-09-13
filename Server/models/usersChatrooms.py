@@ -1,8 +1,8 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from users import User
-from chatrooms import Chatroom
+from .users import User
+from .chatrooms import Chatroom
 
 load_dotenv()
 

@@ -1,8 +1,8 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from users import User
-from posts import Post
+from .users import User
+from .posts import Post
 
 load_dotenv()
 
