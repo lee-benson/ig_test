@@ -1,8 +1,8 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from .users import User
-from .chatrooms import Chatroom
+import users
+import chatrooms
 
 load_dotenv()
 
@@ -16,8 +16,8 @@ db = PostgresqlDatabase(
  
 # Creates association between users and their chatrooms
 class UsersChatroom(Model):
-    user = ForeignKeyField(User, backref='chatrooms')
-    chatroom = ForeignKeyField(Chatroom, backref='users')
+    user = ForeignKeyField(users.User, backref='chatrooms')
+    chatroom = ForeignKeyField(chatrooms.Chatroom, backref='users')
 
     class Meta:
         database = db

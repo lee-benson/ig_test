@@ -1,7 +1,7 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from .users import User
+import users
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ db = PostgresqlDatabase(
 
 
 class Post(Model):
-    user = ForeignKeyField(User, backref='posts')
+    user = ForeignKeyField(users.User, backref='posts')
     caption = TextField(default='') # Empty string creates optional effect
     image_url = CharField()
     timestamp = DateTimeField()

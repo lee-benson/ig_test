@@ -1,13 +1,13 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from .users import User
-from .posts import Post
-from .comments import Comment
-from .chatrooms import Chatroom
-from .messages import Message
-from .usersChatrooms import UsersChatroom
-from .followers import Follower
+import users
+import posts
+import comments
+import chatrooms
+import messages
+import usersChatrooms
+import followers
 
 load_dotenv()
 
@@ -22,7 +22,7 @@ db = PostgresqlDatabase(
 # Create Tables
 
 db.connect()
-db.create_tables([User, Post, Follower, Comment, Chatroom, Message, UsersChatroom])
+db.create_tables([users.User, posts.Post, followers.Follower, comments.Comment, chatrooms.Chatroom, messages.Message, usersChatrooms.UsersChatroom])
 db.close()
 
 # Next step would be to seed data/ create dummy data

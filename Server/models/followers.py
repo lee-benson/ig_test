@@ -1,7 +1,7 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from .users import User
+import users
 
 load_dotenv()
 
@@ -20,8 +20,8 @@ db = PostgresqlDatabase(
 # user1.followers queries users that follow user1 (user1 is a followee)
 
 class Follower(Model):
-    follower = ForeignKeyField(User, backref='following') 
-    followee = ForeignKeyField(User, backref='followers')
+    follower = ForeignKeyField(users.User, backref='following') 
+    followee = ForeignKeyField(users.User, backref='followers')
 
     class Meta:
         database = db

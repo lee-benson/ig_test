@@ -2,7 +2,7 @@ import os
 from peewee import *
 from dotenv import load_dotenv
 from datetime import datetime
-from .users import User
+import users
 
 load_dotenv()
 
@@ -19,8 +19,8 @@ class Chatroom(Model):
     created_at = DateTimeField(default=datetime.utcnow)
     updated_at = DateTimeField(default=datetime.utcnow)
     name = CharField(default='Chat')
-    initiator = ForeignKeyField(User, backref='dm_initiated', null=True)
-    direct_receiver = ForeignKeyField(User, backref='dm_received', null=True)
+    initiator = ForeignKeyField(users.User, backref='dm_initiated', null=True)
+    direct_receiver = ForeignKeyField(users.User, backref='dm_received', null=True)
 
     class Meta:
         database = db

@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from ..models.users import User
+import models
 from dotenv import load_dotenv
 import os
 import jwt
@@ -15,7 +15,7 @@ def verify_auth():
             return jsonify({'error': 'Missing authorization header'}), 401 
         token = auth_header.split()[1]
         decoded_token = jwt.decode(token, TOKEN_KEY, algorithms=['HS256'])
-        user = User.get(User.id == decoded_token['user_id'])
+        user = models.users.User.get(models.users.User.id == decoded_token['user_id'])
         if not user:
             return jsonify({'message' : 'You need to be signed in to make this request'}), 401
     except Exception as e:
