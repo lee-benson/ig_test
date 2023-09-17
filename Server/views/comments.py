@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify, json
 from datetime import datetime
-from ..models.users import User
-from ..models.posts import Post
-from ..models.comments import Comment
-from ..cache.redis_cache import *
+from models.users import User
+from models.posts import Post
+from models.comments import Comment
+from cache.redis_cache import *
 import jwt
 import os
 from dotenv import load_dotenv

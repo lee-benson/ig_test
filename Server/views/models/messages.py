@@ -1,8 +1,8 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-import users
-import chatrooms
+from users import User
+from chatrooms import Chatroom
 
 load_dotenv()
 
@@ -16,9 +16,9 @@ db = PostgresqlDatabase(
 
 
 class Message(Model):
-    chatroom = ForeignKeyField(chatrooms.Chatroom, backref='messages')
-    sender = ForeignKeyField(users.User, backref='messages_sent')
-    receiver = ManyToManyField(users.User, backref='messages_received') # a receiver can receive multiple messages, a message can be for multiple receivers
+    chatroom = ForeignKeyField(Chatroom, backref='messages')
+    sender = ForeignKeyField(User, backref='messages_sent')
+    receiver = ManyToManyField(User, backref='messages_received') # a receiver can receive multiple messages, a message can be for multiple receivers
     text = TextField()
     timestamp = DateTimeField()
 

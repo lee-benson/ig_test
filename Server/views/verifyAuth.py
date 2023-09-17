@@ -20,4 +20,6 @@ def verify_auth():
             return jsonify({'message' : 'You need to be signed in to make this request'}), 401
     except Exception as e:
         return jsonify({'error : str(e)'}), 500
+
+print("This works")
         

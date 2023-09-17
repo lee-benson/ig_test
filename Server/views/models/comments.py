@@ -1,8 +1,8 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-import users
-import posts
+from users import User
+from posts import Post
 
 load_dotenv()
 
@@ -19,8 +19,8 @@ db = PostgresqlDatabase(
 
 
 class Comment(Model):
-    user = ForeignKeyField(users.User, backref='comments')
-    post = ForeignKeyField(posts.Post, backref='comments')
+    user = ForeignKeyField(User, backref='comments')
+    post = ForeignKeyField(Post, backref='comments')
     text = TextField()
     timestamp = DateTimeField()
 

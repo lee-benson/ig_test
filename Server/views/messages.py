@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, json
 from datetime import datetime, timedelta
-from ..models.users import User
-from ..models.chatrooms import Chatroom
-from ..models.messages import Message
-from ..models.usersChatrooms import UsersChatroom
-from ..cache.redis_cache import *
+from models.users import User
+from models.chatrooms import Chatroom
+from models.messages import Message
+from models.usersChatrooms import UsersChatroom
+from cache.redis_cache import *
 from flask_socketio import emit
 from . import socketio 
 import os

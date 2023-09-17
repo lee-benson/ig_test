@@ -1,25 +1,30 @@
 from flask import Flask, request
 from flask_socketio import SocketIO
-import views 
-import middleware
+from verifyAuth import verify_auth
+from auth import auth_bp
+from users import users_bp
+from posts import posts_bp
+from comments import comments_bp
+from messages import messages_bp
+from chatrooms import chatrooms_bp
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
 # Register blueprints
 
-app.register_blueprint(views.auth_bp)
-app.register_blueprint(views.users_bp)
-app.register_blueprint(views.posts_bp)
-app.register_blueprint(views.comments_bp)
-app.register_blueprint(views.messages_bp)
-app.register_blueprint(views.chatrooms_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(users_bp)
+app.register_blueprint(posts_bp)
+app.register_blueprint(comments_bp)
+app.register_blueprint(messages_bp)
+app.register_blueprint(chatrooms_bp)
 
 @app.before_request
 def before_request():
     if request.endpoint in ['CREATE', 'PUT', 'DELETE']:
         # Middleware authentication
-        middleware.verify_auth()
+        verify_auth()
 
 @socketio.on('connect')
 def handle_connect():

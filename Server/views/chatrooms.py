@@ -4,11 +4,11 @@
 from peewee import *
 from flask import Blueprint, request, jsonify, json
 from datetime import datetime
-from ..models.createTables import db
-from ..models.users import User
-from ..models.chatrooms import Chatroom
-from ..models.chatrooms import UsersChatroom
-from ..cache.redis_cache import *
+from models.createTables import db
+from models.users import User
+from models.chatrooms import Chatroom
+from models.chatrooms import UsersChatroom
+from cache.redis_cache import *
 from dotenv import load_dotenv
 import os
 import jwt

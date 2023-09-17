@@ -1,6 +1,13 @@
 from peewee import *
 from flask import request, jsonify
-import models.users
+from models.users import User
+from models.posts import Post
+from models.followers import Follower
+from models.comments import Comment
+from models.chatrooms import Chatroom
+from models.usersChatrooms import UsersChatroom
+from models.messages import Message
+from models.createTables import db
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import os
@@ -22,7 +29,7 @@ def generate_token(user):
 # Seeding user data
 
 def seed_users():
-    with models.createTables.db.atomic():
+    with db.atomic():
         user_data = [
             {'username' : 'user1', 'password' : 'password1'},
             {'username' : 'user2', 'password' : 'password2'},
@@ -37,17 +44,17 @@ def seed_users():
             # Hash password
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-            user = models.User.create(username=username, password=hashed_password)
+            user = User.create(username=username, password=hashed_password)
             token = generate_token(user)
             print(f"User '{username}' with token : '{token}' has been created.")
 
 def seed_posts():
-    with models.createTables.db.atomic():
+    with db.atomic():
         
-        first_user = models.users.User.get(models.users.User.username == 'user1')
-        sec_user = models.users.User.get(models.users.User.username == 'user2')
-        third_user = models.users.User.get(models.users.User.username == 'user3')
-        fourth_user = models.users.User.get(models.users.User.username == 'user4')
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
         users = [
             first_user,
@@ -57,7 +64,7 @@ def seed_posts():
         ]
 
         for user in users:
-            post = models.posts.Post.create(
+            post = Post.create(
                 user=user,
                 caption='Wow are these four posts exactly the same.',
                 image_url='https://gogocdn.net/cover/86.png',
@@ -66,89 +73,89 @@ def seed_posts():
             print(f"User '{user.username}' just sent this.")
 
 def seed_followers():
-    with models.createTable.db.atomic():
-        first_user = models.users.User.get(models.users.User.username == 'user1')
-        sec_user = models.users.User.get(models.users.User.username == 'user2')
-        third_user = models.users.User.get(models.users.User.username == 'user3')
-        fourth_user = models.users.User.get(models.users.User.username == 'user4')
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
-        first_follower_relation = models.followers.Follower.create(
+        first_follower_relation = Follower.create(
             follower=first_user,
             followee=sec_user,
         )
-        sec_follower_relation = models.followers.Follower.create(
+        sec_follower_relation = Follower.create(
             follower=sec_user,
             followee=first_user, 
         )        
-        third_follower_relation = models.followers.Follower.create(
+        third_follower_relation = Follower.create(
             follower=third_user,
             followee=fourth_user,
         )        
-        fourth_follower_relation = models.followers.Follower.create(
+        fourth_follower_relation = Follower.create(
             follower=fourth_user,
             followee=third_user,
         )
-        fifth_follower_relation = models.followers.Follower.create(
+        fifth_follower_relation = Follower.create(
             follower=third_user,
             followee=first_user,
         )
-        sixth_follower_relation = models.followers.Follower.create(
+        sixth_follower_relation = Follower.create(
             follower=fourth_user,
             followee=first_user,
         )
-        seventh_follower_relation = models.followers.Follower.create(
+        seventh_follower_relation = Follower.create(
             follower=sec_user,
             followee=third_user,
         )
-        eighth_follower_relation = models.followers.Follower.create(
+        eighth_follower_relation = Follower.create(
             follower=sec_user,
             followee=fourth_user,
         )
         print(f"If you see this : '{first_follower_relation.follower}' is a massive nerd.")
 
 def seed_comments():
-    with models.createTables.db.atomic():
-        first_user = models.users.User.get(models.users.User.username == 'user1')
-        sec_user = models.users.User.get(models.users.User.username == 'user2')
-        third_user = models.users.User.get(models.users.User.username == 'user3')
-        fourth_user = models.users.User.get(models.users.User.username == 'user4')
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
-        first_post = models.posts.Post.get(models.posts.Post.user == first_user)
-        sec_post = models.posts.Post.get(models.posts.Post.user == sec_user)
-        third_post = models.posts.Post.get(models.posts.Post.user == third_user)
-        fourth_post = models.posts.Post.get(models.posts.Post.user == fourth_user)
+        first_post = Post.get(Post.user == first_user)
+        sec_post = Post.get(Post.user == sec_user)
+        third_post = Post.get(Post.user == third_user)
+        fourth_post = Post.get(Post.user == fourth_user)
 
-        first_comment = models.comments.Comment.create(
+        first_comment = Comment.create(
             user=first_user,
             post=sec_post,
             text='You stole my post bruh. The lack of originality is appalling.',
             timestamp=datetime.utcnow(),
         )
-        sec_comment = models.comments.Comment.create(
+        sec_comment = Comment.create(
             user=first_user,
             post=sec_post,
             text='Actually, I\'m not even that mad because it\'s a nice post.',
             timestamp=datetime.utcnow(),
         )
-        third_comment = models.comments.Comment.create(
+        third_comment = Comment.create(
             user=sec_user,
             post=sec_post,
             text='You stole my post @first_user. The lack of originality is appalling.',
             timestamp=datetime.utcnow(),
         )
-        fourth_comment = models.comments.Comment.create(
+        fourth_comment = Comment.create(
             user=sec_user,
             post=first_post,
             text='You stole my post bruh. The lack of originality is appalling.',
             timestamp=datetime.utcnow(),
         )
-        fifth_comment = models.comments.Comment.create(
+        fifth_comment = Comment.create(
             user=third_user,
             post=fourth_post,
             text='Honestly, I just think you are really cool.',
             timestamp=datetime.utcnow(),
         )
-        sixth_comment = models.comments.Comment.create(
+        sixth_comment = Comment.create(
             user=fourth_user,
             post=third_post,
             text='I read your comment on my post and I think you are really cool too.',
@@ -157,11 +164,11 @@ def seed_comments():
         print(f"If this worked you'll see this : '{fifth_comment.text}'")
 
 def seed_chatrooms():
-    with models.createTables.db.atomic():
-        first_user = models.users.User.get(models.users.User.username == 'user1')
-        sec_user = models.users.User.get(models.users.User.username == 'user2')
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
 
-        dm_chatroom = models.chatrooms.Chatroom.create(
+        dm_chatroom = Chatroom.create(
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
             name='XxXFrenemies4EverXxX',
@@ -170,7 +177,7 @@ def seed_chatrooms():
         )
 
         # GC relations will be fleshed with UsersChatroom junction table
-        group_chatroom = models.chatrooms.Chatroom.create(
+        group_chatroom = Chatroom.create(
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
             name='RevengersAssembled',
@@ -179,91 +186,91 @@ def seed_chatrooms():
         print(f"Chatroom seeding worked : '{dm_chatroom.name}'.")
 
 def seed_users_chatrooms():
-    with models.createTables.db.atomic():
-        first_user = models.users.User.get(models.users.User.username == 'user1')
-        sec_user = models.users.User.get(models.users.User.username == 'user2')
-        third_user = models.users.User.get(models.users.User.username == 'user3')
-        fourth_user = models.users.User.get(models.users.User.username == 'user4')
+    with db.atomic():
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
-        dm_chatroom = models.chatrooms.hatroom.get(models.chatrooms.Chatroom.name == 'XxXFrenemies4EverXxX')
-        group_chatroom = models.chatrooms.Chatroom.get(models.chatrooms.Chatroom.name == 'RevengersAssembled')
+        dm_chatroom = Chatroom.get(Chatroom.name == 'XxXFrenemies4EverXxX')
+        group_chatroom = Chatroom.get(Chatroom.name == 'RevengersAssembled')
 
-        dm_chatroom_first_user = models.usersChatrooms.UsersChatroom.create(
+        dm_chatroom_first_user = UsersChatroom.create(
             user=first_user,
             chatroom=dm_chatroom,
         )
-        dm_chatroom_sec_user = models.usersChatrooms.UsersChatroom.create(
+        dm_chatroom_sec_user = UsersChatroom.create(
             user=sec_user,
             chatroom=dm_chatroom,
         )
 
         # Group chat
-        group_chatroom_first_user = models.usersChatrooms.UsersChatroom.create(
+        group_chatroom_first_user = UsersChatroom.create(
             user=first_user,
             chatroom=group_chatroom,
         )
-        group_chatroom_sec_user = models.usersChatrooms.UsersChatroom.create(
+        group_chatroom_sec_user = UsersChatroom.create(
             user=sec_user,
             chatroom=group_chatroom,
         )
-        group_chatroom_third_user = models.usersChatrooms.UsersChatroom.create(
+        group_chatroom_third_user = UsersChatroom.create(
             user=third_user,
             chatroom=group_chatroom,
         )
-        group_chatroom_fourth_user = models.usersChatrooms.UsersChatroom.create(
+        group_chatroom_fourth_user = UsersChatroom.create(
             user=fourth_user,
             chatroom=group_chatroom,
         )
         print(f"UsersChatroom works and : '{group_chatroom_first_user.chatroom}' sucks.")
 
 def seed_messages():
-    with models.createTables.db.atomic():
+    with db.atomic():
         # Dm Messages
 
-        first_user = models.users.User.get(models.users.User.username == 'user1')
-        sec_user = models.users.User.get(models.users.User.username == 'user2')
-        third_user = models.users.User.get(models.users.User.username == 'user3')
-        fourth_user = models.users.User.get(models.users.User.username == 'user4')
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
 
-        dm_chatroom = models.chatrooms.Chatroom.get(models.chatrooms.Chatroom.name == 'XxXFrenemies4EverXxX')
-        group_chatroom = models.chatrooms.Chatroom.get(models.chatrooms.Chatroom.name == 'RevengersAssembled')
+        dm_chatroom = Chatroom.get(Chatroom.name == 'XxXFrenemies4EverXxX')
+        group_chatroom = Chatroom.get(Chatroom.name == 'RevengersAssembled')
 
-        first_dm_message = models.messages.Message.create(
+        first_dm_message = Message.create(
             chatroom=dm_chatroom,
             sender=first_user,
             receiver=sec_user,
             text='Don\'t tell the others but I actually follow you',
             timestamp=datetime.utcnow(),
         )
-        sec_dm_message = models.messages.Message.create(
+        sec_dm_message = Message.create(
             chatroom=dm_chatroom,
             sender=sec_user,
             receiver=first_user,
             text='Yeah I got you. Secret best buddies.',
             timestamp=datetime.utcnow(),
         )
-        third_dm_message = models.messages.Message.create(
+        third_dm_message = Message.create(
             chatroom=dm_chatroom,
             sender=sec_user,
             receiver=first_user,
             text='The bestest of friends, our bond is one of a kind.',
             timestamp=datetime.utcnow(),
         )
-        fourth_dm_message = models.messages.Message.create(
+        fourth_dm_message = Message.create(
             chatroom=dm_chatroom,
             sender=first_user,
             receiver=sec_user,
             text='Please never string those words in that order ever again.',
             timestamp=datetime.utcnow(),
         )
-        fifth_dm_message = models.messages.Message.create(
+        fifth_dm_message = Message.create(
             chatroom=dm_chatroom,
             sender=sec_user,
             receiver=first_user,
             text='A kind bond, of our friends one is of the bestest.',
             timestamp=datetime.utcnow(),
         )
-        sixth_dm_message = models.messages.Message.create(
+        sixth_dm_message = Message.create(
             chatroom=dm_chatroom,
             sender=first_user,
             receiver=sec_user,
@@ -272,35 +279,35 @@ def seed_messages():
         )
 
         # Group chat messages 
-        first_group_message = models.messages.Message.create(
+        first_group_message = Message.create(
             chatroom=group_chatroom,
             sender=first_user,
             receiver=[first_user, sec_user, third_user, fourth_user],
             text='Does this thing work?',
             timestamp=datetime.utcnow(),
         )
-        sec_group_message = models.messages.Message.create(
+        sec_group_message = Message.create(
             chatroom=group_chatroom,
             sender=sec_user,
             receiver=[first_user, sec_user, third_user, fourth_user],
             text='Does it?',
             timestamp=datetime.utcnow(),
         )
-        third_group_message = models.messages.Message.create(
+        third_group_message = Message.create(
             chatroom=group_chatroom,
             sender=third_user,
             receiver=[first_user, sec_user, third_user, fourth_user],
             text='I mean yeah I can see your messages.',
             timestamp=datetime.utcnow(),
         )
-        fourth_group_message = models.messages.Message.create(
+        fourth_group_message = Message.create(
             chatroom=group_chatroom,
             sender=fourth_user,
             receiver=[first_user, sec_user, third_user, fourth_user],
             text='It\'s a Christmas miracle that this works.',
             timestamp=datetime.utcnow(),
         )
-        fifth_group_message = models.messages.Message.create(
+        fifth_group_message = Message.create(
             chatroom=group_chatroom,
             sender=first_user,
             receiver=[first_user, sec_user, third_user, fourth_user],
@@ -318,4 +325,4 @@ seed_comments()
 seed_chatrooms()    
 seed_users_chatrooms()
 seed_messages()
-models.createTables.db.close()
+db.close()

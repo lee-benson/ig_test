@@ -2,10 +2,10 @@
 
 from flask import Blueprint, request, jsonify, json
 from datetime import datetime, timedelta
-from ..models.posts import Post
-from ..models.users import User
-from ..models.followers import Follower
-from ..cache.redis_cache import *
+from models.posts import Post
+from models.users import User
+from models.followers import Follower
+from cache.redis_cache import *
 import jwt
 import os
 from dotenv import load_dotenv

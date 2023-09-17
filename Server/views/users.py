@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, jsonify
 from dotenv import load_dotenv
-from ..models.users import User
+from models.users import User
 import os
 import jwt
 
