@@ -1,5 +1,6 @@
 # Quick debug 
 
 import sys
+import os
 print(sys.path)
-sys.path.append('/Users/bensonlee/dev/ig_test')
+print(os.getcwd())

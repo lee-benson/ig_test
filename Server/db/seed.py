@@ -1,6 +1,6 @@
 from peewee import *
 from flask import request, jsonify
-import models
+import models.users
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import os

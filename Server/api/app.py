@@ -2,9 +2,7 @@ from flask import Flask, request
 from flask_socketio import SocketIO
 import views 
 import middleware
-import sys
 
-sys.path.append('/Users/bensonlee/dev/ig_test')
 app = Flask(__name__)
 socketio = SocketIO(app)
 
