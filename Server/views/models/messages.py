@@ -24,3 +24,4 @@ class Message(Model):
 
     class Meta:
         database = db
+print("this is the messagesmodel")

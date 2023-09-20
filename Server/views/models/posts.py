@@ -22,3 +22,4 @@ class Post(Model):
 
     class Meta:
         database = db
+print("this is the postsmodels")

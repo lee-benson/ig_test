@@ -5,9 +5,7 @@ from models.posts import Post
 from models.followers import Follower
 from models.comments import Comment
 from models.chatrooms import Chatroom
-from models.usersChatrooms import UsersChatroom
 from models.messages import Message
-from models.createTables import db
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import os
@@ -16,6 +14,15 @@ import jwt
 
 
 load_dotenv()
+
+db = PostgresqlDatabase(
+    'ig_test_devdb',
+    user=os.environ.get('SUP_USER'),
+    password=os.environ.get('SUP_USERPW'),
+    host='localhost',
+    port=5432,
+)
+
 TOKEN_KEY = os.environ.get('TOKEN_KEY') 
 
 def generate_token(user):
@@ -25,6 +32,12 @@ def generate_token(user):
     }
     token = jwt.encode(payload, TOKEN_KEY, algorithm='HS256')
     return token
+
+
+# Function for importing userschatroom
+def import_userschatroom():
+    from models.usersChatrooms import UsersChatroom
+    return UsersChatroom
 
 # Seeding user data
 
@@ -194,6 +207,7 @@ def seed_users_chatrooms():
 
         dm_chatroom = Chatroom.get(Chatroom.name == 'XxXFrenemies4EverXxX')
         group_chatroom = Chatroom.get(Chatroom.name == 'RevengersAssembled')
+        UsersChatroom = import_userschatroom()
 
         dm_chatroom_first_user = UsersChatroom.create(
             user=first_user,

@@ -111,4 +111,5 @@ def delete_comment(id):
         return jsonify({'error' : 'Comment not found'}), 404
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
-        
+
+print("yo")

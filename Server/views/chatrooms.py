@@ -4,10 +4,8 @@
 from peewee import *
 from flask import Blueprint, request, jsonify, json
 from datetime import datetime
-from models.createTables import db
 from models.users import User
 from models.chatrooms import Chatroom
-from models.chatrooms import UsersChatroom
 from cache.redis_cache import *
 from dotenv import load_dotenv
 import os
@@ -15,7 +13,20 @@ import jwt
 
 load_dotenv()
 
+db = PostgresqlDatabase(
+    'ig_test_devdb',
+    user=os.environ.get('SUP_USER'),
+    password=os.environ.get('SUP_USERPW'),
+    host='localhost',
+    port=5432,
+)
+
 TOKEN_KEY = os.environ.get('TOKEN_KEY')
+
+# Function for importing userschatroom
+def import_userschatroom():
+    from models.usersChatrooms import UsersChatroom
+    return UsersChatroom
 
 # Get user from header
 def token_user():
@@ -39,6 +50,7 @@ chatrooms_bp = Blueprint('chatrooms', __name__)
 def get_all_chatrooms():
     try:
         user = token_user()
+        UsersChatroom = import_userschatroom()
         dm_initiate_chatrooms = Chatroom.select().where(Chatroom.initiator == user).get()
         dm_receive_chatrooms = Chatroom.select().where(Chatroom.direct_receiver == user).get()
         gc_chatrooms = Chatroom.select().join(UsersChatroom).where(
@@ -67,6 +79,7 @@ def get_all_chatrooms():
 def create_group_chatroom():
     try:
         user = token_user()
+        UsersChatroom = import_userschatroom()
         data = request.json
         # Need to get participants from request data
         participants = data.get('participants', [])
@@ -118,3 +131,5 @@ def leave_group_chatroom(id):
         return jsonify(chatroom.serialize()), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
+
+print("does this work! like actually")

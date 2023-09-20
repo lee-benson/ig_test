@@ -1,13 +1,13 @@
 import os
 from peewee import *
 from dotenv import load_dotenv
-from users import User
-from posts import Post
-from comments import Comment
-from chatrooms import Chatroom
-from messages import Message
-from usersChatrooms import UsersChatroom
-from followers import Follower
+from models.users import User
+from models.posts import Post
+from models.comments import Comment
+from models.chatrooms import Chatroom
+from models.messages import Message
+from models.usersChatrooms import UsersChatroom
+from models.followers import Follower
 
 load_dotenv()
 
