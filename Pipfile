@@ -11,7 +11,6 @@ bcrypt = "*"
 pyjwt = "*"
 flask-socketio = "*"
 redis = "*"
-alembic = "*"
 
 [dev-packages]
 
