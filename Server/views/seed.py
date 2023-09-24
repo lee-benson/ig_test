@@ -39,6 +39,11 @@ def import_userschatroom():
     from models.usersChatrooms import UsersChatroom
     return UsersChatroom
 
+# Function for importing messagesreceiver
+def import_messagesreceiver():
+    from models.messagesReceivers import MessagesReceiver
+    return MessagesReceiver
+
 # Seeding user data
 
 def seed_users():
@@ -330,6 +335,140 @@ def seed_messages():
         )
         print(f"Please work for the love of baby Jesus : '{fourth_group_message.text}'")
 
+
+def seed_messages_receivers():
+    with db.atomic():
+        
+        # receivers:
+        first_user = User.get(User.username == 'user1')
+        sec_user = User.get(User.username == 'user2')
+        third_user = User.get(User.username == 'user3')
+        fourth_user = User.get(User.username == 'user4')
+
+        # messages:
+        first_dm_message = Message.get(Message.text == 'Don\'t tell the others but I actually follow you')
+        sec_dm_message = Message.get(Message.text == 'Yeah I got you. Secret best buddies.')
+        third_dm_message = Message.get(Message.text == 'The bestest of friends, our bond is one of a kind.')
+        fourth_dm_message = Message.get(Message.text == 'Please never string those words in that order ever again.')
+        fifth_dm_message = Message.get(Message.text == 'A kind bond, of our friends one is of the bestest.')
+        sixth_dm_message = Message.get(Message.text == 'I can\'t say it\'s been nice knowing you because it hasn\'t been. Unfollowed.')
+        first_group_message = Message.get(Message.text == 'Does this thing work?')
+        sec_group_message = Message.get(Message.text == 'Does it?')
+        third_group_message = Message.get(Message.text == 'I mean yeah I can see your messages.')
+        fourth_group_message = Message.get(Message.text == 'It\'s a Christmas miracle that this works.')
+        fifth_group_message = Message.get(Message.text == 'Hey fourth_user, you\'re lack of faith is showing.')
+
+        MessagesReceiver = import_messagesreceiver()
+
+        # First user
+        first_user_received_message_one = MessagesReceiver.create(
+            receiver=first_user,
+            message=sec_dm_message,
+        )
+        first_user_received_message_two = MessagesReceiver.create(
+            receiver=first_user,
+            message=third_dm_message,
+        )
+        first_user_received_message_three = MessagesReceiver.create(
+            receiver=first_user,
+            message=fifth_dm_message,
+        )
+        # Second user
+        sec_user_received_message_one = MessagesReceiver.create(
+            receiver=sec_user,
+            message=first_dm_message,
+        )
+        sec_user_received_message_two = MessagesReceiver.create(
+            receiver=sec_user,
+            message=fourth_dm_message,
+        )
+        sec_user_received_message_three = MessagesReceiver.create(
+            receiver=sec_user,
+            message=sixth_dm_message,
+        )
+
+        # For group messages
+        first_group_message_user_one = MessagesReceiver.create(
+            receiver=first_user,
+            message=first_group_message,
+        )
+        first_group_message_user_two = MessagesReceiver.create(
+            receiver=sec_user,
+            message=first_group_message,
+        )
+        first_group_message_user_three = MessagesReceiver.create(
+            receiver=third_user,
+            message=first_group_message,
+        )
+        first_group_message_user_four = MessagesReceiver.create(
+            receiver=fourth_user,
+            message=first_group_message,
+        )
+        second_group_message_user_one = MessagesReceiver.create(
+            receiver=first_user,
+            message=sec_group_message,
+        )
+        second_group_message_user_two = MessagesReceiver.create(
+            receiver=sec_user,
+            message=sec_group_message,
+        )
+        second_group_message_user_three = MessagesReceiver.create(
+            receiver=third_user,
+            message=sec_group_message,
+        )
+        second_group_message_user_four = MessagesReceiver.create(
+            receiver=fourth_user,
+            message=sec_group_message,
+        )
+        third_group_message_user_one = MessagesReceiver.create(
+            receiver=first_user,
+            message=third_group_message,
+        )
+        third_group_message_user_two = MessagesReceiver.create(
+            receiver=sec_user,
+            message=third_group_message,
+        )
+        third_group_message_user_three = MessagesReceiver.create(
+            receiver=third_user,
+            message=third_group_message,
+        )
+        third_group_message_user_four = MessagesReceiver.create(
+            receiver=fourth_user,
+            message=third_group_message,
+        )
+        fourth_group_message_user_one = MessagesReceiver.create(
+            receiver=first_user,
+            message=fourth_group_message,
+        )
+        fourth_group_message_user_two = MessagesReceiver.create(
+            receiver=sec_user,
+            message=fourth_group_message,
+        )
+        fourth_group_message_user_three = MessagesReceiver.create(
+            receiver=third_user,
+            message=fourth_group_message,
+        )
+        fourth_group_message_user_four = MessagesReceiver.create(
+            receiver=fourth_user,
+            message=fourth_group_message,
+        )
+        fifth_group_message_user_one = MessagesReceiver.create(
+            receiver=first_user,
+            message=fifth_group_message,
+        )
+        fifth_group_message_user_two = MessagesReceiver.create(
+            receiver=sec_user,
+            message=fifth_group_message,
+        )
+        fifth_group_message_user_three = MessagesReceiver.create(
+            receiver=third_user,
+            message=fifth_group_message,
+        )
+        fifth_group_message_user_four = MessagesReceiver.create(
+            receiver=fourth_user,
+            message=fifth_group_message,
+        )
+        print('if this works, gg im coming home.')
 
 
 seed_users()
