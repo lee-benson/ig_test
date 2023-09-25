@@ -8,8 +8,8 @@ load_dotenv()
 
 db = PostgresqlDatabase(
     'ig_test_devdb',
-    user=os.environ.get('DB_USER'),
-    password=os.environ.get('DB_PW'),
+    user=os.environ.get('SUP_USER'),
+    password=os.environ.get('SUP_USERPW'),
     host='localhost',
     port=5432,
 )

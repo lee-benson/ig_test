@@ -23,8 +23,7 @@ db = PostgresqlDatabase(
 # Create Tables
 
 db.connect()
-# db.create_tables([User, Post, Follower, Comment, Chatroom, Message, UsersChatroom])
-db.create_tables([MessagesReceiver])
+db.create_tables([User, Post, Follower, Comment, Chatroom, Message, MessagesReceiver, UsersChatroom])
 db.close()
 
 # Next step would be to seed data/ create dummy data

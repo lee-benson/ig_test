@@ -478,4 +478,6 @@ seed_comments()
 seed_chatrooms()    
 seed_users_chatrooms()
 seed_messages()
+seed_messages_receivers()
 db.close()
+  

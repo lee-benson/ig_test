@@ -29,6 +29,10 @@ def token_user():
         return jsonify({'error' : 'User not found'}), 404
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
+    
+def import_messagesreceiver():
+    from models.messagesReceivers import MessagesReceiver
+    return MessagesReceiver
 
 messages_bp = Blueprint('messages', __name__)
 
@@ -66,6 +70,7 @@ def create_direct_message(username):
 
         user = token_user()
         receiver = User.select().where(User.username == username).get()
+        MessagesReceiver = import_messagesreceiver()
         
         chatroom = Chatroom.select().where(Chatroom.initiator == user, Chatroom.direct_receiver == receiver).get()
         
@@ -85,14 +90,17 @@ def create_direct_message(username):
         message = Message.create(
             chatroom=selected_chatroom,
             sender=user,
-            receiver=receiver,
             text=data['text'],
             timestamp=datetime.utcnow(),
+        )
+        receiver_of_message = MessagesReceiver.create(
+            receiver=receiver,
+            message=message,
         )
         message_data = {
             'chatroom_id': selected_chatroom.id,
             'sender_id': user.id,
-            'receiver_id': receiver.id,
+            'receiver_id': receiver_of_message,
             'text': data['text'],
             'timestamp': datetime.utcnow().isoformat(),
         }
