@@ -6,7 +6,7 @@ from models.messages import Message
 from models.usersChatrooms import UsersChatroom
 from cache.redis_cache import *
 from flask_socketio import emit
-from . import socketio 
+from init_app import socketio
 import os
 import jwt
 from dotenv import load_dotenv
@@ -121,7 +121,7 @@ def create_group_message(id):
             return jsonify({'error' : 'Chatroom not found'}), 404
         
         data = request.json
-
+        MessagesReceiver = import_messagesreceiver()
         # Determine list of receivers (including the sender)
         receivers = [users.user for users in chatroom.users]
         receivers.append(user)
@@ -132,7 +132,11 @@ def create_group_message(id):
             text=data['text'],
             timestamp=datetime.utcnow(),
         )
-        message.receiver.add(receivers)
+        for receiver in receivers:
+            MessagesReceiver.create(
+                receiver=receiver,
+                message=message,
+            )
         # Unnecessary to specify individual ids for the socket section, chatroom is sufficient.
         message_data = {
             'chatroom_id': chatroom.id,
@@ -179,3 +183,5 @@ def delete_message(id):
         return jsonify({'error' : 'Message not found'}), 404
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
+    
+print("lets see if this views/messages works")

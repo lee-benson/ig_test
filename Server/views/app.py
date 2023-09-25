@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_socketio import SocketIO
+from init_app import app, socketio
 from verifyAuth import verify_auth
 from auth import auth_bp
 from users import users_bp
@@ -7,9 +8,6 @@ from posts import posts_bp
 from comments import comments_bp
 from messages import messages_bp
 from chatrooms import chatrooms_bp
-
-app = Flask(__name__)
-socketio = SocketIO(app)
 
 # Register blueprints
 
@@ -45,3 +43,5 @@ def handle_new_message(message_data):
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)
+
+print("Time to see if app works")
