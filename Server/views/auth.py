@@ -21,7 +21,10 @@ def generate_token(user):
        'user_id': user.id,
        'exp': datetime.utcnow() + timedelta(minutes=30) 
     }
+    print(f"Tracking token_key: {TOKEN_KEY}")
+
     token = jwt.encode(payload, TOKEN_KEY, algorithm='HS256')
+    print(f"Tracking token: {token}")
     return token
 
 # Define signup and login functions
@@ -33,13 +36,20 @@ def signup():
         username = data['username']
         password = data['password']
 
+        print(f"Received username: {username}")
+        print(f"Received password: {password}")
+
         # Hash password
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
         # Create user
         user = User.create(username=username, password=hashed_password)
-        token = generate_token(user.id)
+        print(f"Created user: {user.username}")
+
+        token = generate_token(user)
+        print(f"Generated token: {token}")
+
         return jsonify({'token' : token})
     except Exception as e:
         return jsonify({'error' : str(e)}), 500 
@@ -51,6 +61,10 @@ def login():
         username = data['username']
         password = data['password']
 
+        # Debug prints
+        print(f"Received username: {username}")
+        print(f"Received password: {password}")
+
         # Find user
 
         user = User.select().where(User.username == username).get()
@@ -59,7 +73,7 @@ def login():
 
         verify_status = bcrypt.checkpw(password.encode('utf-8'), user.password)
         if user and verify_status:
-            token = generate_token(user.id)
+            token = generate_token(user)
             return jsonify({'token' : token})
         else:
             return jsonify({'error' : 'Invalid credentials'}), 401

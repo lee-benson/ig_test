@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_socketio import SocketIO
+from flask_cors import CORS
 from init_app import app, socketio
 from verifyAuth import verify_auth
 from auth import auth_bp
@@ -8,8 +9,11 @@ from posts import posts_bp
 from comments import comments_bp
 from messages import messages_bp
 from chatrooms import chatrooms_bp
+from test_db_conn import test_db_bp
 
 # Register blueprints
+
+CORS(app)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(users_bp)
@@ -17,6 +21,7 @@ app.register_blueprint(posts_bp)
 app.register_blueprint(comments_bp)
 app.register_blueprint(messages_bp)
 app.register_blueprint(chatrooms_bp)
+app.register_blueprint(test_db_bp)
 
 @app.before_request
 def before_request():

@@ -11,6 +11,7 @@ bcrypt = "*"
 pyjwt = "*"
 flask-socketio = "*"
 redis = "*"
+flask-cors = "*"
 
 [dev-packages]
 
