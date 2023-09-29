@@ -68,12 +68,21 @@ def login():
         # Find user
 
         user = User.select().where(User.username == username).get()
-
+        print(f"Received user: {user}")
         # Verify password
 
+
+        print(f"Show pw: {password.encode('utf-8')}")
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        print(f"Show hashed pw: {hashed_password}")
+
+        print(f"Show user's password: {user.password}")
+
         verify_status = bcrypt.checkpw(password.encode('utf-8'), user.password)
+        print(f"Show verify_status: {verify_status}")
         if user and verify_status:
             token = generate_token(user)
+            print(f"Show token: {token}")
             return jsonify({'token' : token})
         else:
             return jsonify({'error' : 'Invalid credentials'}), 401
