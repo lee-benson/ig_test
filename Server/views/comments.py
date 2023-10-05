@@ -112,4 +112,4 @@ def delete_comment(id):
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-print("yo")
+print("views/comments executed")

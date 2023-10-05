@@ -21,5 +21,5 @@ def verify_auth():
     except Exception as e:
         return jsonify({'error : str(e)'}), 500
 
-print("This works")
+print("views/verify_Auth executed")
         

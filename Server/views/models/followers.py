@@ -26,4 +26,4 @@ class Follower(Model):
     class Meta:
         database = db
 
-print("this is the followersmodels")
+print("models/followers executed")

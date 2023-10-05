@@ -37,3 +37,5 @@ def delete_user(username):
         return jsonify({'message' : 'Account deleted successfully'}), 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
+
+print("views/users executed")

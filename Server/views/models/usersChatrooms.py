@@ -22,4 +22,4 @@ class UsersChatroom(Model):
     class Meta:
         database = db
 
-print("this is the usersChatroomModel")
+print("models/usersChatroom executed")

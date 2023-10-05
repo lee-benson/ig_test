@@ -29,4 +29,4 @@ db.close()
 # Next step would be to seed data/ create dummy data
 
 # Remember to save data and close connection: .save() & db.close()
-print('Will this saga end please')
+print("Ran createTables")

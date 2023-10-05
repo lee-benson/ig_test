@@ -68,17 +68,13 @@ def login():
         # Find user
 
         user = User.select().where(User.username == username).get()
-        print(f"Received user: {user}")
+        print(f"Received user: {user.username}")
+        
         # Verify password
 
+        print(f"Show user's password: {user.password}") # This was returned as string needs to be encoded in checkpw
 
-        print(f"Show pw: {password.encode('utf-8')}")
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        print(f"Show hashed pw: {hashed_password}")
-
-        print(f"Show user's password: {user.password}")
-
-        verify_status = bcrypt.checkpw(password.encode('utf-8'), user.password)
+        verify_status = bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8'))
         print(f"Show verify_status: {verify_status}")
         if user and verify_status:
             token = generate_token(user)

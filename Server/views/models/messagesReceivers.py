@@ -21,5 +21,5 @@ class MessagesReceiver (Model):
     class Meta:
         database = db
 
-print('for the love of newjeans please work')
+print("models/messagesReceivers executed")
   

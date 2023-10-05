@@ -152,5 +152,5 @@ def token_user():
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-
+print("views/posts executed")
 

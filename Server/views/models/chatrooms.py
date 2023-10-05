@@ -25,4 +25,4 @@ class Chatroom(Model):
     class Meta:
         database = db
 
-print("this is the chatroomsModel")
+print("models/chatroomsModel executed")

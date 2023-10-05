@@ -132,4 +132,4 @@ def leave_group_chatroom(id):
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-print("does this work! like actually")
+print("views/chatrooms executed")

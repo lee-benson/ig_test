@@ -26,4 +26,4 @@ class Comment(Model):
 
     class Meta:
         database = db
-print("does this work!")
+print("models/comments executed")

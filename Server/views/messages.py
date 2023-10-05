@@ -184,4 +184,4 @@ def delete_message(id):
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
     
-print("lets see if this views/messages works")
+print("views/messages executed")
