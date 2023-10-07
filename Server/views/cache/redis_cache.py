@@ -3,6 +3,7 @@ import redis
 # Connect to Redis (Has its own databases)
 
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
 
 # Get cached data function
 def get_data_from_cache(cache_key):

@@ -38,6 +38,7 @@ def get_posts():
 
         # Query followee's posts ('<<' means included)
         # Adding redis cache
+        client_redis = redis.Redis(connection_pool=redis_pool)
 
         post_cache_key = f'cache_key_post_user_{user.id}'
         cached_posts = get_data_from_cache(post_cache_key)
@@ -51,6 +52,7 @@ def get_posts():
             # Store fetched data into redis cache
             set_data_in_cache(post_cache_key, posts_ttl, json.dumps(posts))
 
+        client_redis.close()
         #  Return serialized data back to client
 
         return jsonify(posts), 200
