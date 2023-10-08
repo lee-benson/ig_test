@@ -24,5 +24,15 @@ class Chatroom(Model):
 
     class Meta:
         database = db
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'name': self.name,
+            'initiator': self.initiator,
+            'direct_receiver': self.direct_receiver,
+        }
 
 print("models/chatroomsModel executed")

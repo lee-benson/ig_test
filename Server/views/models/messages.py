@@ -24,4 +24,14 @@ class Message(Model):
 
     class Meta:
         database = db
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'chatroom': self.chatroom,
+            'sender': self.sender,
+            'text': self.text,
+            'timestamp': self.timestamp,
+        }
+
 print("models/messages executed")

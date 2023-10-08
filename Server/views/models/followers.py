@@ -26,4 +26,11 @@ class Follower(Model):
     class Meta:
         database = db
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'follower': self.follower,
+            'followee': self.followee,
+        }
+    
 print("models/followers executed")

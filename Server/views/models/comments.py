@@ -26,4 +26,14 @@ class Comment(Model):
 
     class Meta:
         database = db
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user': self.user,
+            'post': self.post,
+            'text': self.text,
+            'timestamp': self.timestamp,
+        }
+    
 print("models/comments executed")

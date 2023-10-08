@@ -22,4 +22,14 @@ class Post(Model):
 
     class Meta:
         database = db
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user': self.user,
+            'caption': self.caption,
+            'image_url': self.image_url,
+            'timestamp': self.timestamp,
+        }
+    
 print("models/posts executed")

@@ -22,4 +22,11 @@ class UsersChatroom(Model):
     class Meta:
         database = db
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user': self.user,
+            'chatroom': self.chatroom,
+        }
+
 print("models/usersChatroom executed")

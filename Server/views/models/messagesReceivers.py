@@ -20,6 +20,13 @@ class MessagesReceiver (Model):
 
     class Meta:
         database = db
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'receiver': self.receiver,
+            'message': self.message,
+        }
 
 print("models/messagesReceivers executed")
   

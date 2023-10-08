@@ -19,4 +19,12 @@ class User(Model):
 
     class Meta:
         database = db
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'password': self.password,
+        }
+    
 print("models/users executed")
